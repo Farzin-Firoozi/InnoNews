@@ -4,18 +4,10 @@ const mergeFirstTwo = (paragraphs: string[]): string[] => {
   return [`${first} ${second}`.trim(), ...rest]
 }
 
-export const parseParagraphs = (text: string): string[] => {
-  const byNewline = text
-    .split(/\n+/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-
-  if (byNewline.length > 1) return mergeFirstTwo(byNewline)
-
+const splitBySentences = (text: string): string[] => {
   const sentences = text.match(/[^.!?]+[.!?]+(\s+|$)/g)
-  if (!sentences || sentences.length <= 3) {
-    return mergeFirstTwo(byNewline.length ? byNewline : [text])
-  }
+
+  if (!sentences || sentences.length <= 3) return [text]
 
   const groups: string[] = []
   for (let i = 0; i < sentences.length; i += 3) {
@@ -26,7 +18,17 @@ export const parseParagraphs = (text: string): string[] => {
         .trim(),
     )
   }
-  return mergeFirstTwo(groups.filter(Boolean))
+  return groups.filter(Boolean)
+}
+
+export const parseParagraphs = (text: string): string[] => {
+  const chunks = text
+    .split(/\n+/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  const paragraphs = chunks.flatMap(splitBySentences)
+  return mergeFirstTwo(paragraphs)
 }
 
 export const paragraphLabel = (text: string): string => {
