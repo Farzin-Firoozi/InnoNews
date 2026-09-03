@@ -40,7 +40,7 @@ const ArticleBody = ({ article }: ArticleBodyProps) => {
             className={cn(
               'scroll-mt-24 text-justify text-base leading-relaxed text-stone-700',
               i === 0 &&
-                'first-letter:font-oranienbaum first-letter:float-left first-letter:pr-1 first-letter:text-6xl first-letter:leading-[0.8]',
+                'first-letter:font-oranienbaum first-letter:float-left first-letter:pt-1 first-letter:pr-1 first-letter:text-6xl first-letter:leading-[0.8]',
             )}
           >
             {text}
@@ -52,8 +52,9 @@ const ArticleBody = ({ article }: ArticleBodyProps) => {
         <aside className="hidden lg:block">
           <div className="sticky top-24 flex flex-col gap-3 border-l border-stone-200 pl-5">
             <span className="text-xs font-medium tracking-[0.15em] text-stone-500">
-              CONTENTS
+              Table of Contents
             </span>
+
             <nav className="flex flex-col gap-2">
               {toc.map((item) => (
                 <a
