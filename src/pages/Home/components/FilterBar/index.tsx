@@ -1,21 +1,34 @@
-import { FilterPills, type PillFilter } from '@/components/site/FilterPills'
+import { FilterPills } from '@/components/site/FilterPills'
 
 import { ARTICLE_CATEGORIES } from '@/types/article'
-import type { ArticleFilters } from '@/types/article'
-
-export type { PillFilter }
 
 type FilterBarProps = {
-  active: PillFilter | null
-  onSelect: (pill: PillFilter) => void
+  authors: string[]
+  selectedSources: string[]
+  selectedCategories: string[]
+  selectedAuthors: string[]
+  onToggleSource: (value: string) => void
+  onToggleCategory: (value: string) => void
+  onToggleAuthor: (value: string) => void
+  onClearSources: () => void
+  onClearCategories: () => void
+  onClearAuthors: () => void
   dateFrom: string
   dateTo: string
-  onDateChange: (patch: Pick<ArticleFilters, 'from' | 'to'>) => void
+  onDateChange: (patch: { from?: string; to?: string }) => void
 }
 
 const FilterBar = ({
-  active,
-  onSelect,
+  authors,
+  selectedSources,
+  selectedCategories,
+  selectedAuthors,
+  onToggleSource,
+  onToggleCategory,
+  onToggleAuthor,
+  onClearSources,
+  onClearCategories,
+  onClearAuthors,
   dateFrom,
   dateTo,
   onDateChange,
@@ -24,8 +37,16 @@ const FilterBar = ({
     <section className="flex flex-col gap-5">
       <FilterPills
         categories={ARTICLE_CATEGORIES}
-        active={active}
-        onSelect={onSelect}
+        authors={authors}
+        selectedSources={selectedSources}
+        selectedCategories={selectedCategories}
+        selectedAuthors={selectedAuthors}
+        onToggleSource={onToggleSource}
+        onToggleCategory={onToggleCategory}
+        onToggleAuthor={onToggleAuthor}
+        onClearSources={onClearSources}
+        onClearCategories={onClearCategories}
+        onClearAuthors={onClearAuthors}
         dateFrom={dateFrom}
         dateTo={dateTo}
         onDateChange={onDateChange}

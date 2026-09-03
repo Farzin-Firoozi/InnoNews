@@ -1,15 +1,46 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 
 import { Search, X } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
+import { useDebouncedValue } from 'rooks'
 
 import BrandName from '@/components/BrandName'
 
 const Header = () => {
-  const [query, setQuery] = useQueryState('q', parseAsString.withDefault(''))
+  const [query, setQuery] = useQueryState(
+    'q',
+    parseAsString.withDefault('').withOptions({ history: 'replace' }),
+  )
+
+  // Buffer typing locally so every keystroke doesn't touch the URL/router —
+  // only the settled value is committed, and as a `replace` so it doesn't
+  // spam a browser-history entry per character.
+  const [inputValue, setInputValue] = useState(query)
+  const [debouncedValue] = useDebouncedValue(inputValue, 400)
+
+  useEffect(() => {
+    setQuery(debouncedValue || null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedValue])
+
+  // Stay in sync if the URL changes from elsewhere (browser back/forward, a
+  // shared link, the clear button) — adjusted during render rather than in
+  // an effect, per React's guidance for deriving state from a changed prop.
+  const [syncedQuery, setSyncedQuery] = useState(query)
+  if (query !== syncedQuery) {
+    setSyncedQuery(query)
+    setInputValue(query)
+  }
+
+  const clear = () => {
+    setInputValue('')
+    setQuery(null)
+  }
 
   const onSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
+    setQuery(inputValue || null)
   }
 
   return (
@@ -29,18 +60,18 @@ const Header = () => {
           />
           <input
             type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value || null)}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
             placeholder="Search articles…"
             aria-label="Search articles"
             className="min-w-0 flex-1 bg-transparent text-base text-stone-900 outline-none placeholder:text-stone-500 sm:text-lg"
           />
-          {query ? (
+          {inputValue ? (
             <button
               type="button"
-              onClick={() => setQuery(null)}
+              onClick={clear}
               aria-label="Clear search"
-              className="rounded-full p-1 text-stone-700 transition hover:bg-white hover:text-red-600"
+              className="rounded-full p-1 text-stone-700 transition hover:bg-white hover:text-blue-600"
             >
               <X className="h-5 w-5" strokeWidth={1.75} />
             </button>

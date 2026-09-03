@@ -15,7 +15,7 @@ export function SectionHeader({ title, onSeeAll }: SectionHeaderProps) {
         <button
           type="button"
           onClick={onSeeAll}
-          className="flex items-center gap-1 text-sm font-medium text-red-600 transition hover:gap-1.5"
+          className="flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:gap-1.5"
         >
           See all
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} />

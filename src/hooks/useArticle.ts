@@ -27,7 +27,9 @@ function findInListCache(
 }
 
 /**
- * Loads a single article. Sources without a by-id endpoint (NewsAPI, NYT), or a
+ * Loads a single article via each source's real by-id endpoint where one
+ * exists (Guardian, NYT). NewsAPI's free tier has no such endpoint at all —
+ * that's a genuine API limitation, not a caching choice — so it, and any
  * failed lookup, resolve from the cached list query instead.
  */
 export function useArticle(params: ArticleDetailParams) {

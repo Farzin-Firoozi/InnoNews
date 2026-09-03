@@ -1,56 +1,57 @@
 import { useMemo } from 'react'
 
-import { parseAsString, useQueryStates } from 'nuqs'
-import { useDebouncedValue } from 'rooks'
+import { parseAsArrayOf, parseAsString, useQueryStates } from 'nuqs'
 
-import FilterBar, { type PillFilter } from './components/FilterBar'
+import FilterBar from './components/FilterBar'
 import FilteredResults from './components/FilteredResults'
 import HomeFeed from './components/HomeFeed'
 import HotNews from './components/HotNews'
 import Alert from '@/components/Alert'
 
-import type { ArticleFilters } from '@/types/article'
+import type { SelectedFilters } from '@/types/article'
 
 import { useArticles } from '@/hooks/useArticles'
 import { useHomeNews } from '@/hooks/useHomeNews'
 import { useSearchResults } from '@/hooks/useSearchResults'
 
+const AUTHOR_OPTIONS_LIMIT = 12
+
 const HomePage = () => {
   const [filterParams, setFilterParams] = useQueryStates({
-    q: parseAsString.withDefault(''),
+    q: parseAsString.withDefault('').withOptions({ history: 'replace' }),
     from: parseAsString.withDefault(''),
     to: parseAsString.withDefault(''),
-    category: parseAsString.withDefault(''),
-    source: parseAsString.withDefault(''),
+    categories: parseAsArrayOf(parseAsString).withDefault([]),
+    sources: parseAsArrayOf(parseAsString).withDefault([]),
+    authors: parseAsArrayOf(parseAsString).withDefault([]),
   })
 
   const {
     q: query,
     from: dateFrom,
     to: dateTo,
-    category,
-    source,
+    categories,
+    sources,
+    authors,
   } = filterParams
 
-  const activePill: PillFilter | null = category
-    ? { type: 'category', value: category }
-    : source
-      ? { type: 'source', value: source }
-      : null
+  const activeFilters: SelectedFilters = useMemo(
+    () => ({
+      query: query.trim() || undefined,
+      from: dateFrom || undefined,
+      to: dateTo || undefined,
+      categories,
+      sources,
+      authors,
+    }),
+    [query, dateFrom, dateTo, categories, sources, authors],
+  )
 
-  const [debouncedQuery] = useDebouncedValue(query, 400)
-
-  const activeFilters: ArticleFilters = useMemo(() => {
-    const filters: ArticleFilters = {}
-    if (debouncedQuery.trim()) filters.query = debouncedQuery.trim()
-    if (dateFrom) filters.from = dateFrom
-    if (dateTo) filters.to = dateTo
-    if (category) filters.category = category
-    if (source) filters.source = source
-    return filters
-  }, [debouncedQuery, dateFrom, dateTo, category, source])
-
-  const isFiltering = Object.keys(activeFilters).length > 0
+  const isFiltering =
+    Boolean(activeFilters.query || activeFilters.from || activeFilters.to) ||
+    categories.length > 0 ||
+    sources.length > 0 ||
+    authors.length > 0
 
   const homepage = useHomeNews()
   const { carousel, feed } = homepage
@@ -68,25 +69,42 @@ const HomePage = () => {
   const business = (businessQuery.data ?? []).slice(0, 2)
   const sport = (sportQuery.data ?? []).slice(0, 2)
 
-  const onPillSelect = (pill: PillFilter) => {
-    const isSame =
-      activePill?.type === pill.type && activePill.value === pill.value
-    if (isSame) {
-      setFilterParams({ category: null, source: null })
-      return
+  // Reflects whatever's currently on screen, so picking a source (or any
+  // other filter) narrows the author options to match instead of always
+  // listing authors from the unfiltered homepage feed.
+  const availableAuthors = useMemo(() => {
+    const source = isFiltering ? (filtered.data ?? []) : feed
+    const seen = new Set<string>()
+    for (const article of source) {
+      if (article.author) seen.add(article.author)
+      if (seen.size >= AUTHOR_OPTIONS_LIMIT) break
     }
-    setFilterParams(
-      pill.type === 'category'
-        ? { category: pill.value, source: null }
-        : { category: null, source: pill.value },
-    )
-  }
+    return [...seen]
+  }, [isFiltering, filtered.data, feed])
+
+  const toggle = (list: string[], value: string) =>
+    list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
+
+  const onToggleSource = (value: string) =>
+    setFilterParams({ sources: toggle(sources, value) })
+  const onToggleCategory = (value: string) =>
+    setFilterParams({ categories: toggle(categories, value) })
+  const onToggleAuthor = (value: string) =>
+    setFilterParams({ authors: toggle(authors, value) })
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-14 px-4 py-8 sm:px-6 sm:py-10">
       <FilterBar
-        active={activePill}
-        onSelect={onPillSelect}
+        authors={availableAuthors}
+        selectedSources={sources}
+        selectedCategories={categories}
+        selectedAuthors={authors}
+        onToggleSource={onToggleSource}
+        onToggleCategory={onToggleCategory}
+        onToggleAuthor={onToggleAuthor}
+        onClearSources={() => setFilterParams({ sources: [] })}
+        onClearCategories={() => setFilterParams({ categories: [] })}
+        onClearAuthors={() => setFilterParams({ authors: [] })}
         dateFrom={dateFrom}
         dateTo={dateTo}
         onDateChange={({ from, to }) => {

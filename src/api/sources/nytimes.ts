@@ -6,9 +6,15 @@ const LABEL = "New York Times";
 const BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
 const IMAGE_BASE = "https://www.nytimes.com/";
 
-interface NytMultimedia {
+interface NytMultimediaCrop {
   url?: string;
-  subtype?: string;
+}
+
+/** Since NYT's Apr 2025 Article Search change, `multimedia` is an object
+ * with `default`/`thumbnail` crops, not the array it used to be. */
+interface NytMultimedia {
+  default?: NytMultimediaCrop;
+  thumbnail?: NytMultimediaCrop;
 }
 
 interface NytDoc {
@@ -22,7 +28,7 @@ interface NytDoc {
   pub_date?: string;
   section_name?: string | null;
   news_desk?: string | null;
-  multimedia?: NytMultimedia[];
+  multimedia?: NytMultimedia;
   headline?: { main?: string | null };
   byline?: { original?: string | null };
 }
@@ -32,10 +38,10 @@ interface NytResponse {
   response?: { docs?: NytDoc[] };
 }
 
-function resolveImage(multimedia?: NytMultimedia[]): string | null {
-  const first = multimedia?.find((item) => Boolean(item.url));
-  if (!first?.url) return null;
-  return first.url.startsWith("http") ? first.url : `${IMAGE_BASE}${first.url}`;
+function resolveImage(multimedia?: NytMultimedia): string | null {
+  const url = multimedia?.default?.url ?? multimedia?.thumbnail?.url;
+  if (!url) return null;
+  return url.startsWith("http") ? url : `${IMAGE_BASE}${url}`;
 }
 
 function mapArticle(raw: NytDoc): Article {
@@ -94,10 +100,24 @@ export async function fetchArticles(
   }
 }
 
-/**
- * Article Search has no by-id lookup; the detail page falls back to the cached
- * list query.
- */
-export async function fetchArticleById(): Promise<Article | null> {
-  return null;
+/** Article Search supports filtering by `uri`, which is the same value we
+ * store as an article's `id` — so a real by-id lookup is possible. */
+export async function fetchArticleById(id: string): Promise<Article | null> {
+  try {
+    const { data } = await client.get<NytResponse>(BASE_URL, {
+      params: {
+        "api-key": requireKey(
+          import.meta.env.VITE_NYT_API_KEY,
+          "VITE_NYT_API_KEY",
+          LABEL,
+        ),
+        fq: `uri:("${id}")`,
+      },
+    });
+    const doc = data.response?.docs?.[0];
+    return doc ? mapArticle(doc) : null;
+  } catch {
+    // Let the caller fall back to the cached list result.
+    return null;
+  }
 }

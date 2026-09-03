@@ -16,7 +16,7 @@ const ArticleBody = ({ article }: ArticleBodyProps) => {
       .filter(Boolean)
       .join('\n\n')
 
-    return text ? parseParagraphs(text).slice(0, 10) : []
+    return text ? parseParagraphs(text).slice(0, 15) : []
   }, [article.description, article.content])
 
   const toc = useMemo(
@@ -60,7 +60,7 @@ const ArticleBody = ({ article }: ArticleBodyProps) => {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="text-sm text-stone-700 transition hover:text-red-600"
+                  className="text-sm text-stone-700 transition hover:text-blue-600"
                 >
                   {item.label}
                 </a>

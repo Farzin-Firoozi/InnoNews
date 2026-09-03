@@ -97,7 +97,7 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
               />
               <div className="flex flex-col gap-3">
                 <p className="font-roboto text-xs text-stone-500">
-                  <span className="font-medium text-red-600">
+                  <span className="font-medium text-blue-600">
                     {tagLabel(article)}
                   </span>
                   {" · "}
@@ -153,7 +153,7 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={i === selectedIndex}
                 className={`h-2.5 rounded-full transition-all ${
-                  i === selectedIndex ? "w-6 bg-red-600" : "w-2.5 bg-stone-50"
+                  i === selectedIndex ? "w-6 bg-blue-600" : "w-2.5 bg-stone-50"
                 }`}
               />
             ))}

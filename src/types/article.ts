@@ -22,6 +22,8 @@ export interface Article {
   category: string | null
 }
 
+/** Shape sent to a single source adapter's `fetchArticles` — always at
+ * most one category, since that's what a source's API call can take. */
 export interface ArticleFilters {
   query?: string
   /** ISO date (YYYY-MM-DD) lower bound. */
@@ -31,6 +33,19 @@ export interface ArticleFilters {
   category?: string
   /** When set, only that source is queried. */
   source?: string
+}
+
+/** Shape of the user's current filter selection — multiple sources,
+ * categories, and authors can be picked at once. No source API exposes a
+ * real author filter, or a multi-category one, so those are matched
+ * client-side against each fetched article after the network call(s). */
+export interface SelectedFilters {
+  query?: string
+  from?: string
+  to?: string
+  categories: string[]
+  sources: string[]
+  authors: string[]
 }
 
 export const ARTICLE_SOURCES: ArticleSource[] = [
@@ -53,4 +68,10 @@ export const ARTICLE_CATEGORIES = [
   'entertainment',
   'health',
   'science',
+  'world',
+  'politics',
+  'environment',
+  'culture',
+  'money',
+  'travel',
 ] as const

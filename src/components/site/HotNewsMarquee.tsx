@@ -12,7 +12,7 @@ export function HotNewsMarquee({ articles }: { articles: Article[] }) {
         <Link
           key={`${article.source}:${article.id}`}
           to={articleHref(article)}
-          className="mx-4 inline-flex items-center gap-2 text-sm text-stone-700 transition hover:text-red-600"
+          className="mx-4 inline-flex items-center gap-2 text-sm text-stone-700 transition hover:text-blue-600"
         >
           {article.title}
           <span className="text-stone-200" aria-hidden="true">
@@ -25,7 +25,7 @@ export function HotNewsMarquee({ articles }: { articles: Article[] }) {
 
   return (
     <div className="group/marquee flex items-center gap-3 overflow-hidden rounded-full border border-stone-200 bg-stone-50 py-2 pl-4 pr-2">
-      <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium tracking-[0.15em] text-red-600">
+      <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium tracking-[0.15em] text-blue-600">
         <Flame className="h-4 w-4" strokeWidth={1.75} />
         HOT
       </span>

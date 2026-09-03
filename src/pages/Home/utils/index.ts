@@ -5,8 +5,7 @@ export const articleKey = (article: Article) =>
 
 export const splitFeed = (feed: Article[]) => ({
   latest: feed.slice(0, 4),
-  mustRead: feed.slice(4, 12),
-  editorsPick: feed.slice(12, 17),
+  editorsPick: feed.slice(4, 9),
   marquee: feed.slice(0, 10),
 })
 

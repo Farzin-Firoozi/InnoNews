@@ -3,6 +3,7 @@ import type { Article } from "../../types/article";
 import { ImageOrPlaceholder } from "./ImageOrPlaceholder";
 import { articleHref, tagLabel } from "./format";
 import { readTime, timeAgo } from "@/utils/date";
+import Skeleton from "@/components/Skeleton";
 
 interface MetaProps {
   article: Article;
@@ -13,7 +14,7 @@ function Meta({ article, tone = "default" }: MetaProps) {
   const toneClass = tone === "onImage" ? "text-white/75" : "text-stone-500";
   return (
     <p className={`font-roboto text-xs ${toneClass}`}>
-      <span className="font-medium text-red-600">{tagLabel(article)}</span>
+      <span className="font-medium text-blue-600">{tagLabel(article)}</span>
       {" · "}
       {timeAgo(article.publishedAt)}
       {" · "}
@@ -70,7 +71,7 @@ export function VerticalCard({
         className="aspect-[4/3] w-full rounded-xl transition duration-500 group-hover:scale-[1.02]"
       />
       <Meta article={article} />
-      <h3 className="font-oranienbaum text-base leading-snug text-stone-900 line-clamp-2 group-hover:text-red-600">
+      <h3 className="font-oranienbaum text-base leading-snug text-stone-900 line-clamp-2 group-hover:text-blue-600">
         {article.title}
       </h3>
     </Link>
@@ -94,7 +95,7 @@ export function HorizontalCard({
         className="h-20 w-24 shrink-0 rounded-lg"
       />
       <div className="flex min-w-0 flex-col justify-center gap-1.5">
-        <h3 className="font-oranienbaum text-sm leading-snug text-stone-900 line-clamp-2 group-hover:text-red-600">
+        <h3 className="font-oranienbaum text-sm leading-snug text-stone-900 line-clamp-2 group-hover:text-blue-600">
           {article.title}
         </h3>
         <Meta article={article} />

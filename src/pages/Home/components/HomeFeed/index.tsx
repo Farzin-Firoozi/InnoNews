@@ -9,7 +9,6 @@ import CategoryNews from '../CategoryNews'
 import EditorsPick from '../EditorsPick'
 import HotNews from '../HotNews'
 import LatestNews from '../LatestNews'
-import MustRead from '../MustRead'
 import TopCreators from '../TopCreators'
 
 type HomeFeedProps = {
@@ -20,7 +19,7 @@ type HomeFeedProps = {
 }
 
 const HomeFeed = ({ carousel, feed, business, sport }: HomeFeedProps) => {
-  const { latest, mustRead, editorsPick, marquee } = splitFeed(feed)
+  const { latest, editorsPick, marquee } = splitFeed(feed)
   const topCreators = useMemo(() => pickTopCreators(feed), [feed])
 
   return (
@@ -34,7 +33,6 @@ const HomeFeed = ({ carousel, feed, business, sport }: HomeFeedProps) => {
       )}
 
       <LatestNews articles={latest} />
-      <MustRead articles={mustRead} />
       <EditorsPick articles={editorsPick} />
       <CategoryNews business={business} sport={sport} />
       <TopCreators articles={topCreators} />
