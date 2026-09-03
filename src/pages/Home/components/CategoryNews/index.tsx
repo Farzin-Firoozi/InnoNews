@@ -1,10 +1,10 @@
+import Alert from '@/components/Alert'
 import { VerticalCard } from '@/components/site/ArticleCard'
 import { SectionHeader } from '@/components/site/SectionHeader'
 
 import type { Article } from '@/types/article'
 
 import { articleKey } from '../../utils'
-import StatusMessage from '../StatusMessage'
 
 type CategoryNewsProps = {
   business: Article[]
@@ -30,7 +30,7 @@ const CategoryColumn = ({
           ))}
         </div>
       ) : (
-        <StatusMessage>{emptyLabel}</StatusMessage>
+        <Alert>{emptyLabel}</Alert>
       )}
     </div>
   )

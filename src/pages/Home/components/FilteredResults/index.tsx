@@ -1,10 +1,10 @@
+import Alert from '@/components/Alert'
 import { VerticalCard } from '@/components/site/ArticleCard'
 import { SectionHeader } from '@/components/site/SectionHeader'
 
 import type { Article } from '@/types/article'
 
 import { articleKey } from '../../utils'
-import StatusMessage from '../StatusMessage'
 
 type FilteredResultsProps = {
   articles: Article[] | undefined
@@ -23,16 +23,12 @@ const FilteredResults = ({
     <section>
       <SectionHeader title="Results" />
 
-      {isLoading && <StatusMessage>Searching…</StatusMessage>}
+      {isLoading && <Alert>Searching…</Alert>}
 
-      {isError && (
-        <StatusMessage tone="brand" role="alert">
-          {errorMessage}
-        </StatusMessage>
-      )}
+      {isError && <Alert>{errorMessage}</Alert>}
 
       {!isLoading && !isError && articles?.length === 0 && (
-        <StatusMessage>No articles matched these filters.</StatusMessage>
+        <Alert>No articles matched these filters.</Alert>
       )}
 
       {!isLoading && !isError && articles && articles.length > 0 && (

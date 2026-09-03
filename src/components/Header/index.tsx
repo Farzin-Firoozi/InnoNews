@@ -14,7 +14,7 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-30 border-b border-stone-200 bg-white/90 backdrop-blur">
-      <div className="container flex items-center gap-4 py-3 sm:gap-6">
+      <div className="container flex items-center gap-4 py-4 sm:gap-6">
         <Link to="/" className="shrink-0">
           <BrandName />
         </Link>

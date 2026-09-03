@@ -7,7 +7,7 @@ import FilterBar, { type PillFilter } from './components/FilterBar'
 import FilteredResults from './components/FilteredResults'
 import HomeFeed from './components/HomeFeed'
 import HotNews from './components/HotNews'
-import StatusMessage from './components/StatusMessage'
+import Alert from '@/components/Alert'
 
 import type { ArticleFilters } from '@/types/article'
 
@@ -108,11 +108,11 @@ const HomePage = () => {
       ) : homepage.isPending ? (
         <HotNews.Skeleton />
       ) : homepage.isError ? (
-        <StatusMessage tone="brand" role="alert">
+        <Alert>
           {homepage.error instanceof Error
             ? homepage.error.message
             : 'Failed to load articles.'}
-        </StatusMessage>
+        </Alert>
       ) : (
         <HomeFeed
           carousel={carousel}

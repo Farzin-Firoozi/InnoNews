@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
+import { paragraphLabel, parseParagraphs } from '@/pages/Details/utils'
+
 import { cn } from '@/utils/cn'
 
 import type { Article } from '@/types/article'
-
-import { paragraphLabel, parseParagraphs } from '../../utils'
 
 type ArticleBodyProps = {
   article: Article
@@ -16,7 +16,7 @@ const ArticleBody = ({ article }: ArticleBodyProps) => {
       .filter(Boolean)
       .join('\n\n')
 
-    return text ? parseParagraphs(text) : []
+    return text ? parseParagraphs(text).slice(0, 10) : []
   }, [article.description, article.content])
 
   const toc = useMemo(

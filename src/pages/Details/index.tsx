@@ -1,7 +1,7 @@
 import { useParams } from 'react-router'
 
 import ArticleView from './components/ArticleView'
-import StatusMessage from './components/StatusMessage'
+import Alert from '@/components/Alert'
 
 import type { ArticleDetailParams } from '@/types/article'
 
@@ -15,13 +15,13 @@ const ArticleDetailsPage = () => {
   return (
     <main className="container">
       {isError && (
-        <StatusMessage tone="brand" role="alert">
+        <Alert>
           {error instanceof Error ? error.message : 'Failed to load article.'}
-        </StatusMessage>
+        </Alert>
       )}
 
       {!isPending && !isError && !article && (
-        <StatusMessage>This article is not available.</StatusMessage>
+        <Alert>This article is not available.</Alert>
       )}
 
       {article ? <ArticleView article={article} /> : <ArticleView.Skeleton />}
