@@ -1,26 +1,26 @@
-import type { Article, ArticleFilters, ArticleSource } from "../types/article";
-import { ARTICLE_SOURCES } from "../types/article";
-import * as newsapi from "./sources/newsapi";
-import * as guardian from "./sources/guardian";
-import * as nytimes from "./sources/nytimes";
+import type { Article, ArticleFilters, ArticleSource } from '../types/article'
+import { ARTICLE_SOURCES } from '../types/article'
+import * as guardian from './sources/guardian'
+import * as newsapi from './sources/newsapi'
+import * as nytimes from './sources/nytimes'
 
 interface SourceAdapter {
-  fetchArticles: (filters: ArticleFilters) => Promise<Article[]>;
-  fetchArticleById: (id: string) => Promise<Article | null>;
+  fetchArticles: (filters: ArticleFilters) => Promise<Article[]>
+  fetchArticleById: (id: string) => Promise<Article | null>
 }
 
 export const SOURCE_ADAPTERS: Record<ArticleSource, SourceAdapter> = {
   newsapi,
   guardian,
   nytimes,
-};
+}
 
 function isKnownSource(value: string): value is ArticleSource {
-  return (ARTICLE_SOURCES as string[]).includes(value);
+  return (ARTICLE_SOURCES as string[]).includes(value)
 }
 
 function byPublishedAtDesc(a: Article, b: Article): number {
-  return b.publishedAt.localeCompare(a.publishedAt);
+  return b.publishedAt.localeCompare(a.publishedAt)
 }
 
 /**
@@ -34,32 +34,34 @@ export async function fetchAllArticles(
   const targets =
     filters.source && isKnownSource(filters.source)
       ? [filters.source]
-      : ARTICLE_SOURCES;
+      : ARTICLE_SOURCES
 
   const settled = await Promise.allSettled(
     targets.map((source) => SOURCE_ADAPTERS[source].fetchArticles(filters)),
-  );
+  )
 
   const articles = settled.flatMap((result) =>
-    result.status === "fulfilled" ? result.value : [],
-  );
+    result.status === 'fulfilled' ? result.value : [],
+  )
 
   if (articles.length === 0) {
-    const firstRejection = settled.find((r) => r.status === "rejected");
+    const firstRejection = settled.find((r) => r.status === 'rejected')
     if (firstRejection) {
       throw firstRejection.reason instanceof Error
         ? firstRejection.reason
-        : new Error(String(firstRejection.reason));
+        : new Error(String(firstRejection.reason))
     }
   }
 
-  return articles.sort(byPublishedAtDesc);
+  return articles.sort(byPublishedAtDesc)
 }
 
-export async function fetchArticleById(
-  source: string,
-  id: string,
-): Promise<Article | null> {
-  if (!isKnownSource(source)) return null;
-  return SOURCE_ADAPTERS[source].fetchArticleById(id);
+export async function fetchArticleById(params: {
+  source: string
+  id: string
+}): Promise<Article | null> {
+  const { source, id } = params
+
+  if (!isKnownSource(source)) return null
+  return SOURCE_ADAPTERS[source].fetchArticleById(id)
 }
