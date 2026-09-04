@@ -1,75 +1,75 @@
-# React + TypeScript + Vite
+# InnoNews Aggregator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A news aggregator that pulls articles from multiple sources — NewsAPI, The
+Guardian, The New York Times, and BBC News (via newsdata.io) — with search,
+filtering (date/category/source/author), and a personalized feed that
+persists across visits.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+React + TypeScript, Vite, Tailwind CSS, TanStack Query, Jotai (persisted
+preferences), nuqs (URL-synced filters).
 
-## React Compiler
+## Local development
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+pnpm install
+cp .env.example .env   # fill in your API keys — see below
+pnpm dev
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+### API keys
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+All variables must keep the `VITE_` prefix (Vite only exposes prefixed vars
+to the client bundle, and it bakes them in at **build** time, not runtime).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+| Variable | Source |
+|---|---|
+| `VITE_NEWS_API_KEY` | https://newsapi.org/register |
+| `VITE_GUARDIAN_API_KEY` | https://open-platform.theguardian.com/access/ |
+| `VITE_NYT_API_KEY` | https://developer.nytimes.com/my-apps (enable "Article Search API") |
+| `VITE_NYT_API_SECRET` | issued alongside the NYT key; unused by Article Search, kept for completeness |
+| `VITE_NEWSDATA_API_KEY` | https://newsdata.io/register (powers the BBC News source) |
 
+See `.env.example` for per-key notes and free-tier limitations.
+
+## Running with Docker
+
+The app is a static SPA — the container just builds it and serves the
+output with nginx.
+
+```bash
+cp .env.example .env   # fill in your API keys
+docker compose up --build
+```
+
+Then open http://localhost:8080.
+
+Without compose:
+
+```bash
+docker build \
+  --build-arg VITE_NEWS_API_KEY=... \
+  --build-arg VITE_GUARDIAN_API_KEY=... \
+  --build-arg VITE_NYT_API_KEY=... \
+  --build-arg VITE_NEWSDATA_API_KEY=... \
+  -t inno-news .
+docker run -p 8080:80 inno-news
+```
+
+Because Vite bakes `VITE_*` values into the built JS bundle, they must be
+passed as **build args**, not container env vars — setting `-e` on `docker
+run` has no effect after the image is built.
+
+> NewsAPI's free tier blocks browser (CORS) requests from anywhere but
+> `localhost`. Accessing the container via `http://localhost:8080` works;
+> a non-localhost host/IP or a deployed domain will not, without a paid plan.
+
+## Scripts
+
+```bash
+pnpm dev       # start the dev server
+pnpm build     # type-check + production build (dist/)
+pnpm lint      # eslint
+pnpm preview   # preview the production build locally
 ```

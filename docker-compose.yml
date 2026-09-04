@@ -1,0 +1,12 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        VITE_NEWS_API_KEY: ${VITE_NEWS_API_KEY:?Set VITE_NEWS_API_KEY in .env}
+        VITE_GUARDIAN_API_KEY: ${VITE_GUARDIAN_API_KEY:?Set VITE_GUARDIAN_API_KEY in .env}
+        VITE_NYT_API_KEY: ${VITE_NYT_API_KEY:?Set VITE_NYT_API_KEY in .env}
+        VITE_NYT_API_SECRET: ${VITE_NYT_API_SECRET:-}
+        VITE_NEWSDATA_API_KEY: ${VITE_NEWSDATA_API_KEY:?Set VITE_NEWSDATA_API_KEY in .env}
+    ports:
+      - '8080:80'
