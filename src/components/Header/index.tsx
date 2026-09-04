@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 
 import { Search, X } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
@@ -67,7 +67,9 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-30 border-b border-stone-200 bg-white/90 backdrop-blur">
       <div className="container flex items-center gap-4 py-4 sm:gap-6">
-        <BrandName />
+        <Link to="/">
+          <BrandName />
+        </Link>
 
         <form
           onSubmit={onSubmit}
