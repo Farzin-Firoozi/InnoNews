@@ -7,11 +7,12 @@ import { cn } from '@/utils/cn'
 type SmartImageProps = ImgHTMLAttributes<HTMLImageElement>
 
 const SmartImage: FC<SmartImageProps> = (props) => {
-  const { src, alt, className, onLoad, ...rest } = props
+  const { src, alt, className, onLoad, onError, ...rest } = props
 
   const [loaded, setLoaded] = useState(false)
+  const [hasError, setHasError] = useState(false)
 
-  if (src) {
+  if (src && !hasError) {
     return (
       <img
         src={src}
@@ -20,6 +21,10 @@ const SmartImage: FC<SmartImageProps> = (props) => {
         onLoad={(event) => {
           setLoaded(true)
           onLoad?.(event)
+        }}
+        onError={(event) => {
+          setHasError(true)
+          onError?.(event)
         }}
         className={cn(
           'object-cover transition-opacity duration-500',
@@ -35,9 +40,9 @@ const SmartImage: FC<SmartImageProps> = (props) => {
     <div
       role="img"
       aria-label={alt}
-      className={cn('flex items-center justify-center bg-gray-100', className)}
+      className={cn('flex items-center justify-center bg-stone-100', className)}
     >
-      <Newspaper className="h-6 w-6 text-gray-500" strokeWidth={1.5} />
+      <Newspaper className="h-6 w-6 text-stone-400" strokeWidth={1.5} />
     </div>
   )
 }
