@@ -35,15 +35,19 @@ export function useHomeContent(
   const { carousel, feed } = homepage
   const filtered = useSearchResults(activeFilters)
 
+  // Business/Sport are curated shortcuts for browsing by category — once the
+  // user has already picked a category, showing them again is redundant.
+  const showCategorySections = activeFilters.categories.length === 0
+
   const curatedView = useMemo(() => {
     const articles = filtered.data ?? []
     return {
       carousel: articles.slice(0, 3),
       feed: articles.slice(3),
-      business: byCategory(articles, 'business'),
-      sport: byCategory(articles, 'sport'),
+      business: showCategorySections ? byCategory(articles, 'business') : [],
+      sport: showCategorySections ? byCategory(articles, 'sport') : [],
     }
-  }, [filtered.data])
+  }, [filtered.data, showCategorySections])
 
   const homeView = useMemo(
     () => ({

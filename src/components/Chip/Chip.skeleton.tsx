@@ -8,7 +8,7 @@ type ChipSkeletonProps = {
 
 const ChipSkeleton = ({ className }: ChipSkeletonProps) => {
   return (
-    <Skeleton className={cn('h-8.5 w-20 shrink-0 rounded-full', className)} />
+    <Skeleton className={cn('h-9 w-20 shrink-0 rounded-full', className)} />
   )
 }
 

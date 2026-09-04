@@ -24,7 +24,7 @@ const Chip = ({
       aria-pressed={pressed}
       aria-label={ariaLabel}
       className={cn(
-        'shrink-0 cursor-pointer rounded-full border px-3.5 py-1.5 text-sm capitalize transition',
+        'inline-flex h-9 shrink-0 cursor-pointer items-center rounded-full border px-3.5 text-sm capitalize transition',
         pressed
           ? 'border-brand bg-brand text-white'
           : 'hover:border-brand/50 border-stone-200 bg-stone-50 text-stone-700',

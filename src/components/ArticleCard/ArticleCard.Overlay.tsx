@@ -1,9 +1,9 @@
-import { Link } from 'react-router'
+import { Link, useViewTransitionState } from 'react-router'
 
 import SmartImage from '@/components/SmartImage'
 
 import { cn } from '@/utils/cn'
-import { articleHref } from '@/utils/links'
+import { articleHref, articleImageTransitionName } from '@/utils/links'
 
 import type { Article } from '@/types/article'
 
@@ -18,9 +18,13 @@ const ArticleCardOverlay = ({
   article,
   className,
 }: ArticleCardOverlayProps) => {
+  const href = articleHref(article)
+  const isTransitioning = useViewTransitionState(href)
+
   return (
     <Link
-      to={articleHref(article)}
+      to={href}
+      viewTransition
       className={cn(
         'group relative block overflow-hidden rounded-2xl',
         className,
@@ -29,6 +33,11 @@ const ArticleCardOverlay = ({
       <SmartImage
         src={article.imageUrl ?? undefined}
         alt={article.title}
+        style={
+          isTransitioning
+            ? { viewTransitionName: articleImageTransitionName(article) }
+            : undefined
+        }
         className="h-full w-full transition duration-700 group-hover:scale-105"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />

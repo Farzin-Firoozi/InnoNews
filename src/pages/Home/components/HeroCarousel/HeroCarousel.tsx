@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useViewTransitionState } from 'react-router'
 
 import useEmblaCarousel from 'embla-carousel-react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -8,7 +8,7 @@ import SmartImage from '@/components/SmartImage'
 
 import { readTime, timeAgo } from '@/utils/date'
 import { tagLabel } from '@/utils/format'
-import { articleHref } from '@/utils/links'
+import { articleHref, articleImageTransitionName } from '@/utils/links'
 
 import type { Article } from '@/types/article'
 
@@ -17,6 +17,49 @@ const MANUAL_PAUSE_MS = 5000
 
 type HeroCarouselProps = {
   articles: Article[]
+}
+
+const HeroCarouselSlide = ({ article }: { article: Article }) => {
+  const href = articleHref(article)
+  const isTransitioning = useViewTransitionState(href)
+
+  return (
+    <Link
+      to={href}
+      viewTransition
+      className="group grid min-w-0 flex-[0_0_100%] grid-cols-1 gap-5 md:grid-cols-2 md:items-center"
+    >
+      <div className="aspect-4/3 w-full overflow-hidden rounded-2xl">
+        <SmartImage
+          src={article.imageUrl ?? undefined}
+          alt={article.title}
+          style={
+            isTransitioning
+              ? { viewTransitionName: articleImageTransitionName(article) }
+              : undefined
+          }
+          className="h-full w-full transition duration-500 group-hover:scale-105"
+        />
+      </div>
+      <div className="flex flex-col gap-3">
+        <p className="font-roboto text-xs text-stone-500">
+          <span className="text-brand font-medium">{tagLabel(article)}</span>
+          {' · '}
+          {timeAgo(article.publishedAt)}
+          {' · '}
+          {readTime(article)} min read
+        </p>
+        <h2 className="font-oranienbaum group-hover:text-brand text-2xl leading-snug text-stone-900 transition-colors sm:text-3xl md:text-4xl">
+          {article.title}
+        </h2>
+        {article.description && (
+          <p className="line-clamp-3 text-sm leading-relaxed text-stone-700">
+            {article.description}
+          </p>
+        )}
+      </div>
+    </Link>
+  )
 }
 
 const HeroCarouselComponent = ({ articles }: HeroCarouselProps) => {
@@ -94,36 +137,10 @@ const HeroCarouselComponent = ({ articles }: HeroCarouselProps) => {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {articles.map((article) => (
-            <Link
-              to={articleHref(article)}
+            <HeroCarouselSlide
               key={`${article.source}:${article.id}`}
-              className="grid min-w-0 flex-[0_0_100%] grid-cols-1 gap-5 md:grid-cols-2 md:items-center"
-            >
-              <SmartImage
-                src={article.imageUrl ?? undefined}
-                alt={article.title}
-                className="aspect-4/3 w-full rounded-2xl transition duration-500 hover:scale-[1.02]"
-              />
-              <div className="flex flex-col gap-3">
-                <p className="font-roboto text-xs text-stone-500">
-                  <span className="text-brand font-medium">
-                    {tagLabel(article)}
-                  </span>
-                  {' · '}
-                  {timeAgo(article.publishedAt)}
-                  {' · '}
-                  {readTime(article)} min read
-                </p>
-                <h2 className="font-oranienbaum text-2xl leading-snug text-stone-900 sm:text-3xl md:text-4xl">
-                  {article.title}
-                </h2>
-                {article.description && (
-                  <p className="line-clamp-3 text-sm leading-relaxed text-stone-700">
-                    {article.description}
-                  </p>
-                )}
-              </div>
-            </Link>
+              article={article}
+            />
           ))}
         </div>
       </div>

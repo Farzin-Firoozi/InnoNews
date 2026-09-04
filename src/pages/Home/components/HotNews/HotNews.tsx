@@ -22,7 +22,7 @@ const HotNewsComponent = ({ articles }: HotNewsProps) => {
           className="hover:text-brand mx-4 inline-flex items-center gap-2 text-sm text-stone-700 transition"
         >
           {article.title}
-          <span className="text-stone-200" aria-hidden="true">
+          <span className="text-brand" aria-hidden="true">
             •
           </span>
         </Link>

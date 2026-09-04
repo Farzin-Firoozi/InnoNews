@@ -3,6 +3,7 @@ import { ArrowRightIcon } from 'lucide-react'
 import SmartImage from '@/components/SmartImage'
 
 import { readTime, timeAgo } from '@/utils/date'
+import { articleImageTransitionName } from '@/utils/links'
 
 import {
   SOURCE_LABELS,
@@ -42,6 +43,7 @@ const ArticleViewComponent = ({ article }: ArticleViewProps) => {
         <SmartImage
           alt={article.title}
           src={article.imageUrl}
+          style={{ viewTransitionName: articleImageTransitionName(article) }}
           className="aspect-video w-full rounded-xl object-cover"
         />
       )}

@@ -1,9 +1,9 @@
-import { Link } from 'react-router'
+import { Link, useViewTransitionState } from 'react-router'
 
 import SmartImage from '@/components/SmartImage'
 
 import { cn } from '@/utils/cn'
-import { articleHref } from '@/utils/links'
+import { articleHref, articleImageTransitionName } from '@/utils/links'
 
 import type { Article } from '@/types/article'
 
@@ -18,14 +18,23 @@ const ArticleCardVertical = ({
   article,
   className,
 }: ArticleCardVerticalProps) => {
+  const href = articleHref(article)
+  const isTransitioning = useViewTransitionState(href)
+
   return (
     <Link
-      to={articleHref(article)}
+      to={href}
+      viewTransition
       className={cn('group flex flex-col gap-3', className)}
     >
       <SmartImage
         src={article.imageUrl ?? undefined}
         alt={article.title}
+        style={
+          isTransitioning
+            ? { viewTransitionName: articleImageTransitionName(article) }
+            : undefined
+        }
         className="aspect-[4/3] w-full rounded-xl transition duration-500 group-hover:scale-[1.02]"
       />
       <Meta article={article} />

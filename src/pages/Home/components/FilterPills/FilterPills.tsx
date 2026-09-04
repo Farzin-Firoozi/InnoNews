@@ -95,76 +95,86 @@ const FilterPills = ({
     label: author,
   }))
 
+  const dateRange = (
+    <div className="flex flex-col gap-2 md:order-1 md:shrink-0">
+      <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
+        Date range
+      </span>
+      <div className="focus-within:border-brand flex h-9 w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 pr-2 pl-3.5 transition">
+        <label className="flex items-center gap-1.5">
+          <span className="text-xs text-stone-500">From</span>
+          <input
+            type="date"
+            className={dateInputClass}
+            value={dateFrom}
+            onChange={(e) => onDateChange({ from: e.target.value, to: dateTo })}
+          />
+        </label>
+        <span className="text-stone-300">–</span>
+        <label className="flex items-center gap-1.5">
+          <span className="text-xs text-stone-500">To</span>
+          <input
+            type="date"
+            className={dateInputClass}
+            value={dateTo}
+            onChange={(e) =>
+              onDateChange({ from: dateFrom, to: e.target.value })
+            }
+          />
+        </label>
+        {(dateFrom || dateTo) && (
+          <button
+            type="button"
+            onClick={() => onDateChange({ from: '', to: '' })}
+            aria-label="Clear date range"
+            className="hover:text-brand ml-1 rounded-full p-1 text-stone-400 transition hover:bg-white"
+          >
+            <X className="h-3.5 w-3.5" strokeWidth={2} />
+          </button>
+        )}
+      </div>
+    </div>
+  )
+
   return (
-    <div className="flex flex-col gap-5">
-      <ChipRow
-        label="Source"
-        options={sourceOptions}
-        selected={selectedSources}
-        onToggle={onToggleSource}
-        onClear={onClearSources}
-      />
-      <ChipRow
-        label="Category"
-        options={categoryOptions}
-        selected={selectedCategories}
-        onToggle={onToggleCategory}
-        onClear={onClearCategories}
-      />
+    <div className="flex flex-col gap-5 md:flex-row md:flex-wrap md:items-end md:justify-between md:gap-x-8 md:gap-y-6">
+      <div className="flex flex-col items-center justify-between gap-5 md:order-2 md:w-full md:shrink-0 md:flex-row">
+        <ChipRow
+          label="Source"
+          options={sourceOptions}
+          selected={selectedSources}
+          onToggle={onToggleSource}
+          onClear={onClearSources}
+        />
+
+        {dateRange}
+      </div>
+      <div className="md:order-3 md:basis-full">
+        <ChipRow
+          label="Category"
+          options={categoryOptions}
+          selected={selectedCategories}
+          onToggle={onToggleCategory}
+          onClear={onClearCategories}
+        />
+      </div>
       {isLoadingAuthors ? (
-        <FilterPillsSkeleton label="Author" />
+        <div className="md:order-4 md:basis-full">
+          <FilterPillsSkeleton label="Author" />
+        </div>
       ) : (
         (authorOptions.length > 0 || selectedAuthors.length > 0) && (
-          <ChipRow
-            label="Author"
-            options={authorOptions}
-            selected={selectedAuthors}
-            onToggle={onToggleAuthor}
-            onClear={onClearAuthors}
-          />
+          <div className="md:order-4 md:basis-full">
+            <ChipRow
+              label="Author"
+              options={authorOptions}
+              selected={selectedAuthors}
+              onToggle={onToggleAuthor}
+              onClear={onClearAuthors}
+            />
+          </div>
         )
       )}
-
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
-          Date range
-        </span>
-        <div className="focus-within:border-brand flex w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 py-1.5 pr-2 pl-3.5 transition">
-          <label className="flex items-center gap-1.5">
-            <span className="text-xs text-stone-500">From</span>
-            <input
-              type="date"
-              className={dateInputClass}
-              value={dateFrom}
-              onChange={(e) =>
-                onDateChange({ from: e.target.value, to: dateTo })
-              }
-            />
-          </label>
-          <span className="text-stone-300">–</span>
-          <label className="flex items-center gap-1.5">
-            <span className="text-xs text-stone-500">To</span>
-            <input
-              type="date"
-              className={dateInputClass}
-              value={dateTo}
-              onChange={(e) =>
-                onDateChange({ from: dateFrom, to: e.target.value })
-              }
-            />
-          </label>
-          {(dateFrom || dateTo) && (
-            <button
-              type="button"
-              onClick={() => onDateChange({ from: '', to: '' })}
-              aria-label="Clear date range"
-              className="hover:text-brand ml-1 rounded-full p-1 text-stone-400 transition hover:bg-white"
-            >
-              <X className="h-3.5 w-3.5" strokeWidth={2} />
-            </button>
-          )}
-        </div>
-      </div>
     </div>
   )
 }
