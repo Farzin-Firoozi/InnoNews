@@ -1,4 +1,4 @@
-import { useState, type ImgHTMLAttributes } from 'react'
+import { useState, type FC, type ImgHTMLAttributes } from 'react'
 
 import { Newspaper } from 'lucide-react'
 
@@ -6,13 +6,9 @@ import { cn } from '@/utils/cn'
 
 type SmartImageProps = ImgHTMLAttributes<HTMLImageElement>
 
-const SmartImage = ({
-  src,
-  alt,
-  className,
-  onLoad,
-  ...props
-}: SmartImageProps) => {
+const SmartImage: FC<SmartImageProps> = (props) => {
+  const { src, alt, className, onLoad, ...rest } = props
+
   const [loaded, setLoaded] = useState(false)
 
   if (src) {
@@ -30,16 +26,16 @@ const SmartImage = ({
           loaded ? 'opacity-100' : 'opacity-0',
           className,
         )}
-        {...props}
+        {...rest}
       />
     )
   }
 
   return (
     <div
-      className={cn('flex items-center justify-center bg-gray-100', className)}
       role="img"
       aria-label={alt}
+      className={cn('flex items-center justify-center bg-gray-100', className)}
     >
       <Newspaper className="h-6 w-6 text-gray-500" strokeWidth={1.5} />
     </div>
