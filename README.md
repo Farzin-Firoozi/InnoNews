@@ -5,6 +5,8 @@ Guardian, The New York Times, and BBC News (via newsdata.io) — with search,
 filtering (date/category/source/author), and a personalized feed that
 persists across visits.
 
+**Live demo:** https://inno-news-mauve.vercel.app/
+
 ## Stack
 
 React + TypeScript, Vite, Tailwind CSS, TanStack Query, Jotai (persisted
