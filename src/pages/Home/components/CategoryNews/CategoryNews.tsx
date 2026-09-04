@@ -1,27 +1,18 @@
 import Alert from '@/components/Alert'
 import ArticleCard from '@/components/ArticleCard'
 
-import type { Article } from '@/types/article'
+import type { CategorySection } from '@/types/home'
 
 import { articleKey } from '../../utils'
 import SectionHeader from '../SectionHeader'
 import CategoryNewsSkeleton from './CategoryNews.skeleton'
 
 type CategoryNewsProps = {
-  business: Article[]
-  sport: Article[]
+  sections: CategorySection[]
   isLoading?: boolean
 }
 
-const CategoryColumn = ({
-  title,
-  articles,
-  emptyLabel,
-}: {
-  title: string
-  articles: Article[]
-  emptyLabel: string
-}) => {
+const CategoryColumn = ({ title, articles }: CategorySection) => {
   return (
     <div>
       <SectionHeader title={title} />
@@ -32,32 +23,21 @@ const CategoryColumn = ({
           ))}
         </div>
       ) : (
-        <Alert>{emptyLabel}</Alert>
+        <Alert>No {title.toLowerCase()} stories in the current results.</Alert>
       )}
     </div>
   )
 }
 
-const CategoryNews = ({
-  business,
-  sport,
-  isLoading = false,
-}: CategoryNewsProps) => {
+const CategoryNews = ({ sections, isLoading = false }: CategoryNewsProps) => {
   if (isLoading) return <CategoryNewsSkeleton />
-  if (business.length === 0 && sport.length === 0) return null
+  if (sections.length === 0) return null
 
   return (
     <section className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-      <CategoryColumn
-        title="Business"
-        articles={business}
-        emptyLabel="No business stories in the current results."
-      />
-      <CategoryColumn
-        title="Sport News"
-        articles={sport}
-        emptyLabel="No sport stories in the current results."
-      />
+      {sections.map((section) => (
+        <CategoryColumn key={section.key} {...section} />
+      ))}
     </section>
   )
 }

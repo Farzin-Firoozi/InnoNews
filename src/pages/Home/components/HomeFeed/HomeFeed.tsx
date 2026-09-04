@@ -11,8 +11,7 @@ import TopCreators from '../TopCreators'
 const HomeFeed = ({
   carousel,
   feed,
-  business,
-  sport,
+  categorySections,
   isLoadingCategories = false,
 }: HomeFeedProps) => {
   const { latest, editorsPick, marquee } = splitFeed(feed)
@@ -31,8 +30,7 @@ const HomeFeed = ({
       <LatestNews articles={latest} />
       <EditorsPick articles={editorsPick} />
       <CategoryNews
-        business={business}
-        sport={sport}
+        sections={categorySections}
         isLoading={isLoadingCategories}
       />
       <TopCreators articles={topCreators} />

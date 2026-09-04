@@ -19,11 +19,16 @@ export type HomeFilters = {
   onDateChange: (patch: { from?: string; to?: string }) => void
 }
 
+export type CategorySection = {
+  key: string
+  title: string
+  articles: Article[]
+}
+
 export type HomeFeedProps = {
   carousel: Article[]
   feed: Article[]
-  business: Article[]
-  sport: Article[]
+  categorySections: CategorySection[]
   isLoadingCategories?: boolean
 }
 

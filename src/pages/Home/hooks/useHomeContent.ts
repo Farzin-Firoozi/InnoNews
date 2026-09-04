@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import type { Article, SelectedFilters } from '@/types/article'
-import type { HomeContent } from '@/types/home'
+import type { CategorySection, HomeContent } from '@/types/home'
 
 import { useHomeNews } from '@/hooks/useHomeNews'
 import { useSearchResults } from '@/hooks/useSearchResults'
@@ -13,13 +13,33 @@ function toErrorMessage(error: unknown) {
   return LOAD_ERROR
 }
 
-/** The Business/Sport columns are sliced out of the articles already fetched
- * for the feed rather than fetched again — no source API call is needed just
- * to fill two slots. */
-function byCategory(articles: Article[], needle: string) {
-  return articles
-    .filter((article) => article.category?.toLowerCase().includes(needle))
-    .slice(0, 2)
+const CATEGORY_COLUMNS = 2
+const ARTICLES_PER_COLUMN = 2
+
+/** The category columns are sliced out of the articles already fetched for
+ * the feed rather than fetched again — no source API call is needed just to
+ * fill a couple of slots. Which categories show up is driven entirely by
+ * what's actually present in that data, picking whichever categories have
+ * the most articles instead of a fixed pair. */
+function topCategorySections(articles: Article[]): CategorySection[] {
+  const byCategory = new Map<string, Article[]>()
+
+  for (const article of articles) {
+    const category = article.category?.trim().toLowerCase()
+    if (!category) continue
+    const bucket = byCategory.get(category) ?? []
+    bucket.push(article)
+    byCategory.set(category, bucket)
+  }
+
+  return Array.from(byCategory.entries())
+    .sort((a, b) => b[1].length - a[1].length)
+    .slice(0, CATEGORY_COLUMNS)
+    .map(([category, categoryArticles]) => ({
+      key: category,
+      title: category.replace(/\b\w/g, (char) => char.toUpperCase()),
+      articles: categoryArticles.slice(0, ARTICLES_PER_COLUMN),
+    }))
 }
 
 /**
@@ -35,8 +55,8 @@ export function useHomeContent(
   const { carousel, feed } = homepage
   const filtered = useSearchResults(activeFilters)
 
-  // Business/Sport are curated shortcuts for browsing by category — once the
-  // user has already picked a category, showing them again is redundant.
+  // Category columns are a curated shortcut for browsing by category — once
+  // the user has already picked one, showing them again is redundant.
   const showCategorySections = activeFilters.categories.length === 0
 
   const curatedView = useMemo(() => {
@@ -44,8 +64,9 @@ export function useHomeContent(
     return {
       carousel: articles.slice(0, 3),
       feed: articles.slice(3),
-      business: showCategorySections ? byCategory(articles, 'business') : [],
-      sport: showCategorySections ? byCategory(articles, 'sport') : [],
+      categorySections: showCategorySections
+        ? topCategorySections(articles)
+        : [],
     }
   }, [filtered.data, showCategorySections])
 
@@ -53,8 +74,7 @@ export function useHomeContent(
     () => ({
       carousel,
       feed,
-      business: byCategory(feed, 'business'),
-      sport: byCategory(feed, 'sport'),
+      categorySections: topCategorySections(feed),
     }),
     [carousel, feed],
   )
