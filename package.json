@@ -9,10 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "vercel:build": "pnpm build && node scripts/prepare-vercel-output.mjs",
-    "vercel:deploy": "pnpm vercel:build && vercel deploy --prebuilt",
-    "vercel:deploy:prod": "pnpm vercel:build && vercel deploy --prebuilt --prod"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
