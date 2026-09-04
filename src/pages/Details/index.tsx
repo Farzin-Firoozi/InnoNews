@@ -14,10 +14,13 @@ const ArticleDetailsPage = () => {
 
   const { error, isError, isPending, data: article } = useArticle(params)
 
+  const title = article?.title ?? 'Article'
+  const shortTitle = title.length > 20 ? `${title.slice(0, 20)}...` : title
+
   return (
     <main className="container flex flex-col gap-6">
       <nav aria-label="Breadcrumb">
-        <ol className="flex items-center gap-1.5 text-sm text-stone-500">
+        <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-stone-500">
           <li>
             <Link to="/" className="hover:text-brand transition">
               Home
@@ -34,9 +37,9 @@ const ArticleDetailsPage = () => {
               </Link>
             </li>
           )}
-          <li className="flex min-w-0 items-center gap-1.5 text-stone-900">
+          <li className="flex items-center gap-1.5 text-stone-900">
             <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{article?.title ?? 'Article'}</span>
+            <span title={title}>{shortTitle}</span>
           </li>
         </ol>
       </nav>
