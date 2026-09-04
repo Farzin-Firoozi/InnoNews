@@ -158,18 +158,30 @@ const DatePicker = ({
             }}
             classNames={dayPickerClassNames}
           />
-          {value && (
+          <div className="mt-1 flex gap-1">
             <button
               type="button"
               onClick={() => {
-                onChange('')
+                onChange(toISODate(new Date()))
                 setIsOpen(false)
               }}
-              className="hover:text-brand mt-1 w-full rounded-full py-1.5 text-center text-xs text-stone-500 transition hover:bg-stone-100"
+              className="text-brand flex-1 rounded-full py-1.5 text-center text-xs font-medium transition hover:bg-stone-100"
             >
-              Clear
+              Today
             </button>
-          )}
+            {value && (
+              <button
+                type="button"
+                onClick={() => {
+                  onChange('')
+                  setIsOpen(false)
+                }}
+                className="hover:text-brand flex-1 rounded-full py-1.5 text-center text-xs text-stone-500 transition hover:bg-stone-100"
+              >
+                Clear
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>
