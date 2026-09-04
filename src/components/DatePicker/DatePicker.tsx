@@ -6,6 +6,7 @@ import {
   flip,
   offset,
   shift,
+  size,
   useFloating,
 } from '@floating-ui/react-dom'
 
@@ -17,6 +18,7 @@ type DatePickerProps = {
   onChange: (value: string) => void
   placeholder: string
   'aria-label': string
+  icon?: ReactNode
   className?: string
 }
 
@@ -67,6 +69,7 @@ const DatePicker = ({
   onChange,
   placeholder,
   'aria-label': ariaLabel,
+  icon,
   className,
 }: DatePickerProps) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -75,7 +78,18 @@ const DatePicker = ({
   const { refs, floatingStyles } = useFloating({
     placement: 'bottom-start',
     whileElementsMounted: autoUpdate,
-    middleware: [offset(8), flip(), shift({ padding: 16 })],
+    middleware: [
+      offset(8),
+      flip(),
+      shift({ padding: 16 }),
+      size({
+        apply({ rects, elements }) {
+          // Match the trigger's width — but never so narrow the day grid
+          // becomes unusable (7 columns need a floor around 240px).
+          elements.floating.style.width = `${Math.max(rects.reference.width, 240)}px`
+        },
+      }),
+    ],
   })
 
   useEffect(() => {
@@ -106,7 +120,7 @@ const DatePicker = ({
   }, [isOpen, refs.reference, refs.floating])
 
   return (
-    <div className={cn('relative', className)}>
+    <div className="relative">
       <button
         ref={refs.setReference}
         type="button"
@@ -114,9 +128,15 @@ const DatePicker = ({
         aria-label={ariaLabel}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
-        className="w-24 cursor-pointer truncate text-left text-sm text-stone-700"
+        className={cn(
+          'flex w-full cursor-pointer items-center gap-2 text-left text-sm text-stone-700',
+          className,
+        )}
       >
-        {value ? formatShortDate(value) : placeholder}
+        {icon}
+        <span className="w-24 truncate">
+          {value ? formatShortDate(value) : placeholder}
+        </span>
       </button>
 
       {isOpen && (
@@ -126,7 +146,7 @@ const DatePicker = ({
           style={floatingStyles}
           role="dialog"
           aria-label={`${ariaLabel} calendar`}
-          className="z-40 w-[90vw] max-w-80 rounded-2xl border border-stone-200 bg-white p-3 shadow-lg sm:w-72"
+          className="z-40 rounded-2xl border border-stone-200 bg-white p-3 shadow-lg"
         >
           <DayPicker
             mode="single"

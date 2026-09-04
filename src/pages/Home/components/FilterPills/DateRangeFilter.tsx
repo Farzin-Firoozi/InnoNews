@@ -14,15 +14,14 @@ const DateField = ({ label, value, onChange }: DateFieldProps) => {
       <span className="text-xs font-medium tracking-widest text-stone-500 uppercase">
         {label}
       </span>
-      <div className="focus-within:border-brand flex h-9 w-full items-center gap-2 rounded-full border border-stone-200 bg-stone-50 px-3.5 transition sm:w-auto">
-        <CalendarDays className="h-3.5 w-3.5 shrink-0 text-stone-400" />
-        <DatePicker
-          value={value}
-          onChange={onChange}
-          placeholder="Any date"
-          aria-label={`${label} date`}
-        />
-      </div>
+      <DatePicker
+        value={value}
+        onChange={onChange}
+        placeholder="Any date"
+        aria-label={`${label} date`}
+        icon={<CalendarDays className="h-3.5 w-3.5 shrink-0 text-stone-400" />}
+        className="focus-visible:border-brand h-9 rounded-full border border-stone-200 bg-stone-50 px-3.5 transition sm:w-auto"
+      />
     </div>
   )
 }
