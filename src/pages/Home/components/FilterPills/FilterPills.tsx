@@ -4,6 +4,7 @@ import Chip from '@/components/Chip'
 
 import type { ArticleSource } from '@/types/article'
 import { ARTICLE_SOURCES, SOURCE_LABELS } from '@/types/article'
+import type { HomeFilters } from '@/types/home'
 
 import FilterPillsSkeleton from './FilterPills.skeleton'
 
@@ -48,22 +49,8 @@ const ChipRow = ({
   )
 }
 
-type FilterPillsProps = {
+type FilterPillsProps = HomeFilters & {
   categories: readonly string[]
-  authors: string[]
-  isLoadingAuthors: boolean
-  selectedSources: string[]
-  selectedCategories: string[]
-  selectedAuthors: string[]
-  onToggleSource: (value: string) => void
-  onToggleCategory: (value: string) => void
-  onToggleAuthor: (value: string) => void
-  onClearSources: () => void
-  onClearCategories: () => void
-  onClearAuthors: () => void
-  dateFrom: string
-  dateTo: string
-  onDateChange: (patch: { from?: string; to?: string }) => void
 }
 
 const dateInputClass =

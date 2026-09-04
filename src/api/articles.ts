@@ -30,21 +30,39 @@ function byPublishedAtDesc(a: Article, b: Article): number {
   return b.publishedAt.localeCompare(a.publishedAt)
 }
 
+/** Same article can come back from more than one request when categories are
+ * fanned out, so results are keyed by source + source-specific id. */
+function dedupe(articles: Article[]): Article[] {
+  const seen = new Map<string, Article>()
+  for (const article of articles) {
+    const key = `${article.source}:${article.id}`
+    if (!seen.has(key)) seen.set(key, article)
+  }
+  return [...seen.values()]
+}
+
+function firstRejectionError(
+  settled: PromiseSettledResult<Article[]>[],
+): Error | null {
+  const rejection = settled.find((result) => result.status === 'rejected')
+  if (!rejection) return null
+  return rejection.reason instanceof Error
+    ? rejection.reason
+    : new Error(String(rejection.reason))
+}
+
 /**
- * Queries every source (or only the selected one) and merges the results.
- * A failing source is skipped rather than failing the whole request; if every
- * source fails, the first error is surfaced.
+ * Queries every source and merges the results. A failing source is skipped
+ * rather than failing the whole request; if every source fails, the first
+ * error is surfaced.
  */
 export async function fetchAllArticles(
   filters: ArticleFilters,
 ): Promise<Article[]> {
-  const targets =
-    filters.source && isKnownSource(filters.source)
-      ? [filters.source]
-      : ARTICLE_SOURCES
-
   const settled = await Promise.allSettled(
-    targets.map((source) => SOURCE_ADAPTERS[source].fetchArticles(filters)),
+    ARTICLE_SOURCES.map((source) =>
+      SOURCE_ADAPTERS[source].fetchArticles(filters),
+    ),
   )
 
   const articles = settled.flatMap((result) =>
@@ -52,23 +70,19 @@ export async function fetchAllArticles(
   )
 
   if (articles.length === 0) {
-    const firstRejection = settled.find((r) => r.status === 'rejected')
-    if (firstRejection) {
-      throw firstRejection.reason instanceof Error
-        ? firstRejection.reason
-        : new Error(String(firstRejection.reason))
-    }
+    const error = firstRejectionError(settled)
+    if (error) throw error
   }
 
-  return articles.sort(byPublishedAtDesc)
+  return dedupe(articles).sort(byPublishedAtDesc)
 }
 
 /**
  * Search/filter path for multi-select sources/categories/authors. A source's
- * API call can only take one category, so when exactly one is selected it's
- * passed through server-side; zero or multiple categories fall back to an
- * unfiltered fetch with client-side matching below (same for authors, which
- * no source API can filter by at all).
+ * API call can only take one category, so each selected category is fetched
+ * as its own request per source and the results are merged/deduped here.
+ * Authors are still matched client-side, since no source API can filter by
+ * one at all.
  */
 export async function searchArticles(
   filters: SelectedFilters,
@@ -83,40 +97,33 @@ export async function searchArticles(
     filters.query ||
     (filters.authors.length === 1 ? filters.authors[0] : undefined)
 
-  const perSourceFilters: ArticleFilters = {
-    query,
-    from: filters.from,
-    to: filters.to,
-    category:
-      filters.categories.length === 1 ? filters.categories[0] : undefined,
-  }
+  const categories: (string | undefined)[] = filters.categories.length
+    ? filters.categories
+    : [undefined]
 
-  const settled = await Promise.allSettled(
-    targets.map((source) =>
-      SOURCE_ADAPTERS[source].fetchArticles(perSourceFilters),
+  const requests = targets.flatMap((source) =>
+    categories.map((category) => {
+      const perSourceFilters: ArticleFilters = {
+        query,
+        from: filters.from,
+        to: filters.to,
+        category,
+      }
+      return SOURCE_ADAPTERS[source].fetchArticles(perSourceFilters)
+    }),
+  )
+
+  const settled = await Promise.allSettled(requests)
+
+  let articles = dedupe(
+    settled.flatMap((result) =>
+      result.status === 'fulfilled' ? result.value : [],
     ),
   )
 
-  let articles = settled.flatMap((result) =>
-    result.status === 'fulfilled' ? result.value : [],
-  )
-
   if (articles.length === 0) {
-    const firstRejection = settled.find((r) => r.status === 'rejected')
-    if (firstRejection) {
-      throw firstRejection.reason instanceof Error
-        ? firstRejection.reason
-        : new Error(String(firstRejection.reason))
-    }
-  }
-
-  if (filters.categories.length > 1) {
-    const needles = filters.categories.map((c) => c.toLowerCase())
-    articles = articles.filter(
-      (a) =>
-        a.category &&
-        needles.some((n) => a.category!.toLowerCase().includes(n)),
-    )
+    const error = firstRejectionError(settled)
+    if (error) throw error
   }
 
   if (filters.authors.length) {

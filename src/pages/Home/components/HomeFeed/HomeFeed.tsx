@@ -1,5 +1,3 @@
-import { useMemo } from 'react'
-
 import type { HomeFeedProps } from '@/types/home'
 
 import { pickTopCreators, splitFeed } from '../../utils'
@@ -18,7 +16,7 @@ const HomeFeed = ({
   isLoadingCategories = false,
 }: HomeFeedProps) => {
   const { latest, editorsPick, marquee } = splitFeed(feed)
-  const topCreators = useMemo(() => pickTopCreators(feed), [feed])
+  const topCreators = pickTopCreators(feed)
 
   return (
     <>

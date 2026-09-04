@@ -1,8 +1,9 @@
-import FilterBar from './components/FilterBar'
+import FilterPills from './components/FilterPills'
 import FilteredResults from './components/FilteredResults'
 import HomeFeed from './components/HomeFeed'
 import Alert from '@/components/Alert'
 
+import { ARTICLE_CATEGORIES } from '@/types/article'
 import type { HomeContent } from '@/types/home'
 
 import { useHomePage } from './hooks/useHomePage'
@@ -27,7 +28,9 @@ const HomePage = () => {
 
   return (
     <main className="container flex flex-col gap-10">
-      <FilterBar filters={filters} />
+      <section className="flex flex-col gap-5">
+        <FilterPills categories={ARTICLE_CATEGORIES} {...filters} />
+      </section>
       <HomeContentView content={content} />
     </main>
   )

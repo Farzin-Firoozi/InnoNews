@@ -1,5 +1,3 @@
-import HeroSplitComponent from './ArticleCard.HeroSplit'
-import HeroSplitSkeletonComponent from './ArticleCard.HeroSplit.skeleton'
 import HorizontalComponent from './ArticleCard.Horizontal'
 import HorizontalSkeletonComponent from './ArticleCard.Horizontal.skeleton'
 import OverlayComponent from './ArticleCard.Overlay'
@@ -16,9 +14,6 @@ const ArticleCard = {
   }),
   Overlay: Object.assign(OverlayComponent, {
     Skeleton: OverlaySkeletonComponent,
-  }),
-  HeroSplit: Object.assign(HeroSplitComponent, {
-    Skeleton: HeroSplitSkeletonComponent,
   }),
 }
 

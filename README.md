@@ -71,5 +71,6 @@ run` has no effect after the image is built.
 pnpm dev       # start the dev server
 pnpm build     # type-check + production build (dist/)
 pnpm lint      # eslint
+pnpm test      # run unit & integration tests (Vitest)
 pnpm preview   # preview the production build locally
 ```

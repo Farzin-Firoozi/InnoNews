@@ -1,6 +1,8 @@
 import type { Article } from './article'
 
-export type FilterBarProps = {
+/** Everything the filter UI needs: the option lists, the current selection,
+ * and the handlers that mutate it. */
+export type HomeFilters = {
   authors: string[]
   isLoadingAuthors: boolean
   selectedSources: string[]

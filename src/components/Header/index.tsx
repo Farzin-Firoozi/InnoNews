@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 
 import { Search, X } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
@@ -18,8 +19,29 @@ const Header = () => {
   const [inputValue, setInputValue] = useState(query)
   const [debouncedValue] = useDebouncedValue(inputValue, 400)
 
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
+
+  // The header renders on the details route too, where nothing consumes `q`.
+  // Committing a search from there sends the user to the home route, which is
+  // the only page that can act on it.
+  const commit = (value: string) => {
+    if (value && pathname !== '/') {
+      navigate(`/?q=${encodeURIComponent(value)}`)
+      return
+    }
+    setQuery(value || null)
+  }
+
+  // Skip the very first debounce tick so arriving on a page with a `?q=` in
+  // the URL doesn't immediately redirect.
+  const committedOnceRef = useRef(false)
   useEffect(() => {
-    setQuery(debouncedValue || null)
+    if (!committedOnceRef.current) {
+      committedOnceRef.current = true
+      return
+    }
+    commit(debouncedValue)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedValue])
 
@@ -39,7 +61,7 @@ const Header = () => {
 
   const onSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setQuery(inputValue || null)
+    commit(inputValue)
   }
 
   return (

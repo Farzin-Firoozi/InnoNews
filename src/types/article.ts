@@ -31,8 +31,6 @@ export interface ArticleFilters {
   /** ISO date (YYYY-MM-DD) upper bound. */
   to?: string
   category?: string
-  /** When set, only that source is queried. */
-  source?: string
 }
 
 /** Shape of the user's current filter selection — multiple sources,
