@@ -1,54 +1,54 @@
-import { client } from "../index";
-import type { Article, ArticleFilters } from "../../types/article";
-import { dateOnly, requireKey, rethrowFriendly, toIsoDate } from "./shared";
+import type { Article, ArticleFilters } from '../../types/article'
+import { client } from '../index'
+import { dateOnly, requireKey, rethrowFriendly, toIsoDate } from './shared'
 
-const LABEL = "New York Times";
-const BASE_URL = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-const IMAGE_BASE = "https://www.nytimes.com/";
+const LABEL = 'New York Times'
+const BASE_URL = 'https://api.nytimes.com/svc/search/v2/articlesearch.json'
+const IMAGE_BASE = 'https://www.nytimes.com/'
 
 interface NytMultimediaCrop {
-  url?: string;
+  url?: string
 }
 
 /** Since NYT's Apr 2025 Article Search change, `multimedia` is an object
  * with `default`/`thumbnail` crops, not the array it used to be. */
 interface NytMultimedia {
-  default?: NytMultimediaCrop;
-  thumbnail?: NytMultimediaCrop;
+  default?: NytMultimediaCrop
+  thumbnail?: NytMultimediaCrop
 }
 
 interface NytDoc {
-  _id: string;
-  uri?: string;
-  web_url: string;
-  abstract?: string | null;
-  snippet?: string | null;
-  lead_paragraph?: string | null;
-  source?: string;
-  pub_date?: string;
-  section_name?: string | null;
-  news_desk?: string | null;
-  multimedia?: NytMultimedia;
-  headline?: { main?: string | null };
-  byline?: { original?: string | null };
+  _id: string
+  uri?: string
+  web_url: string
+  abstract?: string | null
+  snippet?: string | null
+  lead_paragraph?: string | null
+  source?: string
+  pub_date?: string
+  section_name?: string | null
+  news_desk?: string | null
+  multimedia?: NytMultimedia
+  headline?: { main?: string | null }
+  byline?: { original?: string | null }
 }
 
 interface NytResponse {
-  status: string;
-  response?: { docs?: NytDoc[] };
+  status: string
+  response?: { docs?: NytDoc[] }
 }
 
 function resolveImage(multimedia?: NytMultimedia): string | null {
-  const url = multimedia?.default?.url ?? multimedia?.thumbnail?.url;
-  if (!url) return null;
-  return url.startsWith("http") ? url : `${IMAGE_BASE}${url}`;
+  const url = multimedia?.default?.url ?? multimedia?.thumbnail?.url
+  if (!url) return null
+  return url.startsWith('http') ? url : `${IMAGE_BASE}${url}`
 }
 
 function mapArticle(raw: NytDoc): Article {
   return {
     id: raw._id,
-    source: "nytimes",
-    title: raw.headline?.main ?? "Untitled",
+    source: 'nytimes',
+    title: raw.headline?.main ?? 'Untitled',
     description: raw.abstract ?? raw.snippet ?? null,
     content: raw.lead_paragraph ?? raw.abstract ?? null,
     author: raw.byline?.original ?? null,
@@ -56,47 +56,47 @@ function mapArticle(raw: NytDoc): Article {
     imageUrl: resolveImage(raw.multimedia),
     publishedAt: toIsoDate(raw.pub_date),
     category: raw.section_name ?? raw.news_desk ?? null,
-  };
+  }
 }
 
 /** NYT expects begin_date/end_date as YYYYMMDD. */
 function toCompactDate(value?: string): string | undefined {
-  const date = dateOnly(value);
-  return date ? date.replace(/-/g, "") : undefined;
+  const date = dateOnly(value)
+  return date ? date.replace(/-/g, '') : undefined
 }
 
 export async function fetchArticles(
   filters: ArticleFilters,
 ): Promise<Article[]> {
   const params: Record<string, string | number> = {
-    "api-key": requireKey(
+    'api-key': requireKey(
       import.meta.env.VITE_NYT_API_KEY,
-      "VITE_NYT_API_KEY",
+      'VITE_NYT_API_KEY',
       LABEL,
     ),
-    sort: "newest",
-  };
+    sort: 'newest',
+  }
 
-  if (filters.query) params.q = filters.query;
+  if (filters.query) params.q = filters.query
   if (filters.category) {
     // NYT renamed this filter field from `section_name` to `section.name`
     // in their Apr 2025 Article Search API change; values are title-cased.
     const section =
-      filters.category.charAt(0).toUpperCase() + filters.category.slice(1);
-    params.fq = `section.name:("${section}")`;
+      filters.category.charAt(0).toUpperCase() + filters.category.slice(1)
+    params.fq = `section.name:("${section}")`
   }
-  const begin = toCompactDate(filters.from);
-  const end = toCompactDate(filters.to);
-  if (begin) params.begin_date = begin;
-  if (end) params.end_date = end;
+  const begin = toCompactDate(filters.from)
+  const end = toCompactDate(filters.to)
+  if (begin) params.begin_date = begin
+  if (end) params.end_date = end
 
   try {
-    const { data } = await client.get<NytResponse>(BASE_URL, { params });
+    const { data } = await client.get<NytResponse>(BASE_URL, { params })
     return (data.response?.docs ?? [])
       .filter((doc) => Boolean(doc.web_url))
-      .map(mapArticle);
+      .map(mapArticle)
   } catch (error) {
-    rethrowFriendly(error, LABEL);
+    rethrowFriendly(error, LABEL)
   }
 }
 
@@ -106,18 +106,18 @@ export async function fetchArticleById(id: string): Promise<Article | null> {
   try {
     const { data } = await client.get<NytResponse>(BASE_URL, {
       params: {
-        "api-key": requireKey(
+        'api-key': requireKey(
           import.meta.env.VITE_NYT_API_KEY,
-          "VITE_NYT_API_KEY",
+          'VITE_NYT_API_KEY',
           LABEL,
         ),
         fq: `uri:("${id}")`,
       },
-    });
-    const doc = data.response?.docs?.[0];
-    return doc ? mapArticle(doc) : null;
+    })
+    const doc = data.response?.docs?.[0]
+    return doc ? mapArticle(doc) : null
   } catch {
     // Let the caller fall back to the cached list result.
-    return null;
+    return null
   }
 }

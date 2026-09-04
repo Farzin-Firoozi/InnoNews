@@ -142,7 +142,7 @@ const FilterPills = ({
         <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
           Date range
         </span>
-        <div className="flex w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 py-1.5 pr-2 pl-3.5 transition focus-within:border-brand">
+        <div className="focus-within:border-brand flex w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 py-1.5 pr-2 pl-3.5 transition">
           <label className="flex items-center gap-1.5">
             <span className="text-xs text-stone-500">From</span>
             <input
@@ -171,7 +171,7 @@ const FilterPills = ({
               type="button"
               onClick={() => onDateChange({ from: '', to: '' })}
               aria-label="Clear date range"
-              className="ml-1 rounded-full p-1 text-stone-400 transition hover:bg-white hover:text-brand"
+              className="hover:text-brand ml-1 rounded-full p-1 text-stone-400 transition hover:bg-white"
             >
               <X className="h-3.5 w-3.5" strokeWidth={2} />
             </button>

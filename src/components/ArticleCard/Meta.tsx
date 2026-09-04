@@ -13,7 +13,7 @@ const Meta = ({ article, tone = 'default' }: MetaProps) => {
 
   return (
     <p className={`font-roboto text-xs ${toneClass}`}>
-      <span className="font-medium text-brand">{tagLabel(article)}</span>
+      <span className="text-brand font-medium">{tagLabel(article)}</span>
       {' · '}
       {timeAgo(article.publishedAt)}
       {' · '}

@@ -29,7 +29,7 @@ const ArticleCardHorizontal = ({
         className="h-20 w-24 shrink-0 rounded-lg"
       />
       <div className="flex min-w-0 flex-col justify-center gap-1.5">
-        <h3 className="font-oranienbaum line-clamp-2 text-sm leading-snug text-stone-900 group-hover:text-brand">
+        <h3 className="font-oranienbaum group-hover:text-brand line-clamp-2 text-sm leading-snug text-stone-900">
           {article.title}
         </h3>
         <Meta article={article} />

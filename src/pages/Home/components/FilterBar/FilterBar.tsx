@@ -1,7 +1,7 @@
-import FilterPills from '../FilterPills'
-
-import type { FilterBarProps } from '@/types/home'
 import { ARTICLE_CATEGORIES } from '@/types/article'
+import type { FilterBarProps } from '@/types/home'
+
+import FilterPills from '../FilterPills'
 
 const FilterBar = ({ filters }: { filters: FilterBarProps }) => {
   return (

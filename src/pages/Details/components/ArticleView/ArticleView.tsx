@@ -25,7 +25,7 @@ const ArticleViewComponent = ({ article }: ArticleViewProps) => {
         </h1>
 
         <p className="text-sm text-stone-500">
-          <span className="font-medium text-brand">
+          <span className="text-brand font-medium">
             {SOURCE_LABELS[article.source as ArticleSource] ?? article.source}
           </span>
           <span>
@@ -52,7 +52,7 @@ const ArticleViewComponent = ({ article }: ArticleViewProps) => {
         href={article.url}
         target="_blank"
         rel="noreferrer"
-        className="flex items-center gap-1 text-sm text-brand transition hover:text-brand/80"
+        className="text-brand hover:text-brand/80 flex items-center gap-1 text-sm transition"
       >
         Read the full article at the source{' '}
         <ArrowRightIcon className="h-4 w-4" />

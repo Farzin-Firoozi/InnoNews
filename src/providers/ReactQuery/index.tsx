@@ -12,7 +12,7 @@ const ReactQueryProvider: FC<PropsWithChildren> = (props) => {
     <QueryClientProvider client={queryClient}>
       <>{children}</>
 
-      <ReactQueryDevtools />
+      {import.meta.env.DEV && <ReactQueryDevtools />}
     </QueryClientProvider>
   )
 }

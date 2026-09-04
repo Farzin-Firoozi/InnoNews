@@ -27,7 +27,7 @@ const Chip = ({
         'shrink-0 cursor-pointer rounded-full border px-3.5 py-1.5 text-sm capitalize transition',
         pressed
           ? 'border-brand bg-brand text-white'
-          : 'border-stone-200 bg-stone-50 text-stone-700 hover:border-brand/50',
+          : 'hover:border-brand/50 border-stone-200 bg-stone-50 text-stone-700',
         className,
       )}
     >

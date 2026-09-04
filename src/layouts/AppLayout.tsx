@@ -5,7 +5,7 @@ import Header from '@/components/Header'
 
 const AppLayout = () => {
   return (
-    <div id="top" className="bg-white min-h-screen">
+    <div id="top" className="min-h-screen bg-white">
       <Header />
 
       <Outlet />

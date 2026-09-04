@@ -1,5 +1,6 @@
-import { ChevronRight } from 'lucide-react'
 import { Link, useParams } from 'react-router'
+
+import { ChevronRight } from 'lucide-react'
 
 import ArticleView from './components/ArticleView'
 import Alert from '@/components/Alert'
@@ -18,7 +19,7 @@ const ArticleDetailsPage = () => {
       <nav aria-label="Breadcrumb">
         <ol className="flex items-center gap-1.5 text-sm text-stone-500">
           <li>
-            <Link to="/" className="transition hover:text-brand">
+            <Link to="/" className="hover:text-brand transition">
               Home
             </Link>
           </li>
@@ -27,7 +28,7 @@ const ArticleDetailsPage = () => {
               <ChevronRight className="h-3.5 w-3.5 shrink-0" />
               <Link
                 to={`/?categories=${encodeURIComponent(article.category)}`}
-                className="capitalize transition hover:text-brand"
+                className="hover:text-brand capitalize transition"
               >
                 {article.category}
               </Link>
@@ -35,9 +36,7 @@ const ArticleDetailsPage = () => {
           )}
           <li className="flex min-w-0 items-center gap-1.5 text-stone-900">
             <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">
-              {article?.title ?? 'Article'}
-            </span>
+            <span className="truncate">{article?.title ?? 'Article'}</span>
           </li>
         </ol>
       </nav>
@@ -56,7 +55,11 @@ const ArticleDetailsPage = () => {
         </Alert>
       )}
 
-      {article ? <ArticleView article={article} /> : <ArticleView.Skeleton />}
+      {isPending ? (
+        <ArticleView.Skeleton />
+      ) : article ? (
+        <ArticleView article={article} />
+      ) : null}
     </main>
   )
 }

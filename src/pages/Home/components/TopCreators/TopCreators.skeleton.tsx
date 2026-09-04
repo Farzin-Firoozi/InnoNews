@@ -1,5 +1,6 @@
-import SectionHeader from '../SectionHeader'
 import Skeleton from '@/components/Skeleton'
+
+import SectionHeader from '../SectionHeader'
 
 const SKELETON_COUNT = 4
 

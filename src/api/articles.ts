@@ -80,17 +80,21 @@ export async function searchArticles(
   // Give the single-author case a query boost so the server-side search
   // returns relevant results too, not just whatever the client filter keeps.
   const query =
-    filters.query || (filters.authors.length === 1 ? filters.authors[0] : undefined)
+    filters.query ||
+    (filters.authors.length === 1 ? filters.authors[0] : undefined)
 
   const perSourceFilters: ArticleFilters = {
     query,
     from: filters.from,
     to: filters.to,
-    category: filters.categories.length === 1 ? filters.categories[0] : undefined,
+    category:
+      filters.categories.length === 1 ? filters.categories[0] : undefined,
   }
 
   const settled = await Promise.allSettled(
-    targets.map((source) => SOURCE_ADAPTERS[source].fetchArticles(perSourceFilters)),
+    targets.map((source) =>
+      SOURCE_ADAPTERS[source].fetchArticles(perSourceFilters),
+    ),
   )
 
   let articles = settled.flatMap((result) =>
@@ -109,14 +113,17 @@ export async function searchArticles(
   if (filters.categories.length > 1) {
     const needles = filters.categories.map((c) => c.toLowerCase())
     articles = articles.filter(
-      (a) => a.category && needles.some((n) => a.category!.toLowerCase().includes(n)),
+      (a) =>
+        a.category &&
+        needles.some((n) => a.category!.toLowerCase().includes(n)),
     )
   }
 
   if (filters.authors.length) {
     const needles = filters.authors.map((n) => n.toLowerCase())
     articles = articles.filter(
-      (a) => a.author && needles.some((n) => a.author!.toLowerCase().includes(n)),
+      (a) =>
+        a.author && needles.some((n) => a.author!.toLowerCase().includes(n)),
     )
   }
 

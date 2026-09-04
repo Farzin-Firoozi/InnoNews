@@ -29,7 +29,7 @@ const ArticleCardVertical = ({
         className="aspect-[4/3] w-full rounded-xl transition duration-500 group-hover:scale-[1.02]"
       />
       <Meta article={article} />
-      <h3 className="font-oranienbaum line-clamp-2 text-base leading-snug text-stone-900 group-hover:text-brand">
+      <h3 className="font-oranienbaum group-hover:text-brand line-clamp-2 text-base leading-snug text-stone-900">
         {article.title}
       </h3>
     </Link>

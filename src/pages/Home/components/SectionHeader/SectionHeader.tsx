@@ -15,7 +15,7 @@ const SectionHeader = ({ title, onSeeAll }: SectionHeaderProps) => {
         <button
           type="button"
           onClick={onSeeAll}
-          className="flex items-center gap-1 text-sm font-medium text-brand transition hover:gap-1.5"
+          className="text-brand flex items-center gap-1 text-sm font-medium transition hover:gap-1.5"
         >
           See all
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} />

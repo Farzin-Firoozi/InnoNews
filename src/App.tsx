@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router'
 
 import AppLayout from '@/layouts/AppLayout'
+
 import NuqsProvider from '@/providers/Nuqs'
 
 const HomePage = lazy(() => import('@/pages/Home'))
