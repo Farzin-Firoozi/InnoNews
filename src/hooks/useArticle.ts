@@ -7,14 +7,16 @@ import {
 import { fetchArticleById } from '../api/articles'
 import type { Article, ArticleDetailParams } from '../types/article'
 
-/** Scans every cached ['articles', ...] list result for a matching source + id. */
+/** Scans every cached ['articles', ...] or ['search-articles', ...] list result for a matching source + id. */
 function findInListCache(
   queryClient: QueryClient,
   source: string,
   id: string,
 ): Article | null {
   const cached = queryClient.getQueriesData<Article[]>({
-    queryKey: ['articles'],
+    predicate: (query) =>
+      query.queryKey[0] === 'articles' ||
+      query.queryKey[0] === 'search-articles',
   })
 
   for (const [, articles] of cached) {

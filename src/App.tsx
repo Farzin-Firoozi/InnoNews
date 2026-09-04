@@ -1,14 +1,18 @@
+import { lazy, Suspense } from 'react'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router'
 
 import AppLayout from '@/layouts/AppLayout'
-import DetailsPage from '@/pages/Details'
-import HomePage from '@/pages/Home'
 import NuqsProvider from '@/providers/Nuqs'
+
+const HomePage = lazy(() => import('@/pages/Home'))
+const DetailsPage = lazy(() => import('@/pages/Details'))
 
 function Root() {
   return (
     <NuqsProvider>
-      <Outlet />
+      <Suspense fallback={null}>
+        <Outlet />
+      </Suspense>
     </NuqsProvider>
   )
 }
