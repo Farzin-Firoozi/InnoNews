@@ -52,10 +52,10 @@ const Header = () => {
 
         <form
           onSubmit={onSubmit}
-          className="flex min-w-0 flex-1 items-center gap-3 rounded-full border border-stone-200 bg-stone-50 px-4 py-2.5 sm:px-5 sm:py-3"
+          className="ml-auto flex min-w-0 flex-1 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 px-3 py-1.5 sm:max-w-xs sm:px-4 sm:py-2"
         >
           <Search
-            className="h-5 w-5 shrink-0 text-stone-500 sm:h-6 sm:w-6"
+            className="h-4 w-4 shrink-0 text-stone-500"
             strokeWidth={1.75}
           />
           <input
@@ -64,7 +64,7 @@ const Header = () => {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Search articles…"
             aria-label="Search articles"
-            className="min-w-0 flex-1 bg-transparent text-base text-stone-900 outline-none placeholder:text-stone-500 sm:text-lg"
+            className="min-w-0 flex-1 bg-transparent text-sm text-stone-900 outline-none placeholder:text-stone-500"
           />
           {inputValue ? (
             <button
@@ -73,7 +73,7 @@ const Header = () => {
               aria-label="Clear search"
               className="rounded-full p-1 text-stone-700 transition hover:bg-white hover:text-blue-600"
             >
-              <X className="h-5 w-5" strokeWidth={1.75} />
+              <X className="h-4 w-4" strokeWidth={1.75} />
             </button>
           ) : null}
         </form>

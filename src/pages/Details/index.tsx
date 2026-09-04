@@ -21,7 +21,11 @@ const ArticleDetailsPage = () => {
       )}
 
       {!isPending && !isError && !article && (
-        <Alert>This article is not available.</Alert>
+        <Alert>
+          {params.source === 'newsapi'
+            ? "This is a NewsAPI article, and NewsAPI's free tier has no lookup-by-id endpoint — it can only be shown after being loaded from the list first. This is an expected limitation, not a bug: open it from the home feed instead of a fresh/reloaded link."
+            : 'This article is not available. It may have dropped out of the cached results — go back and search again.'}
+        </Alert>
       )}
 
       {article ? <ArticleView article={article} /> : <ArticleView.Skeleton />}

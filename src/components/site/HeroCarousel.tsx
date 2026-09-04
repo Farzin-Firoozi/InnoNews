@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { Article } from "../../types/article";
-import { ImageOrPlaceholder } from "./ImageOrPlaceholder";
+import SmartImage from "@/components/SmartImage";
 import { articleHref, tagLabel } from "./format";
 import { readTime, timeAgo } from "@/utils/date";
 
@@ -90,8 +90,8 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
               key={`${article.source}:${article.id}`}
               className="grid min-w-0 flex-[0_0_100%] grid-cols-1 gap-5 md:grid-cols-2 md:items-center"
             >
-              <ImageOrPlaceholder
-                src={article.imageUrl}
+              <SmartImage
+                src={article.imageUrl ?? undefined}
                 alt={article.title}
                 className="aspect-[4/3] w-full rounded-2xl transition duration-500 hover:scale-[1.02]"
               />

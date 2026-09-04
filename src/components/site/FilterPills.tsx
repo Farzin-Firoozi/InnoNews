@@ -1,5 +1,27 @@
+import { Calendar, X } from "lucide-react";
 import { ARTICLE_SOURCES, SOURCE_LABELS } from "../../types/article";
 import type { ArticleSource } from "../../types/article";
+import Skeleton from "@/components/Skeleton";
+
+/** Fixed widths so the skeleton occupies the same footprint an average
+ * author-name chip would, avoiding layout shift once real data loads. */
+const AUTHOR_CHIP_SKELETON_WIDTHS = ["w-24", "w-16", "w-28", "w-20", "w-16"];
+
+function ChipRowSkeleton({ label }: { label: string }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
+        {label}
+      </span>
+      <div className="flex gap-2 overflow-hidden pb-1">
+        <Skeleton className="h-[34px] w-14 shrink-0 rounded-full" />
+        {AUTHOR_CHIP_SKELETON_WIDTHS.map((width, i) => (
+          <Skeleton key={i} className={`h-[34px] ${width} shrink-0 rounded-full`} />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 interface ChipRowProps {
   label: string;
@@ -54,6 +76,7 @@ function ChipRow({ label, options, selected, onToggle, onClear }: ChipRowProps) 
 interface FilterPillsProps {
   categories: readonly string[];
   authors: string[];
+  isLoadingAuthors: boolean;
   selectedSources: string[];
   selectedCategories: string[];
   selectedAuthors: string[];
@@ -69,11 +92,12 @@ interface FilterPillsProps {
 }
 
 const dateInputClass =
-  "rounded-md border border-stone-200 bg-white px-2 py-1.5 text-xs text-stone-700 focus:border-blue-600 focus:outline-none";
+  "min-w-0 bg-transparent text-sm text-stone-700 outline-none [color-scheme:light] placeholder:text-stone-400";
 
 export function FilterPills({
   categories,
   authors,
+  isLoadingAuthors,
   selectedSources,
   selectedCategories,
   selectedAuthors,
@@ -116,35 +140,56 @@ export function FilterPills({
         onToggle={onToggleCategory}
         onClear={onClearCategories}
       />
-      {authorOptions.length > 0 && (
-        <ChipRow
-          label="Author"
-          options={authorOptions}
-          selected={selectedAuthors}
-          onToggle={onToggleAuthor}
-          onClear={onClearAuthors}
-        />
+      {isLoadingAuthors ? (
+        <ChipRowSkeleton label="Author" />
+      ) : (
+        (authorOptions.length > 0 || selectedAuthors.length > 0) && (
+          <ChipRow
+            label="Author"
+            options={authorOptions}
+            selected={selectedAuthors}
+            onToggle={onToggleAuthor}
+            onClear={onClearAuthors}
+          />
+        )
       )}
 
-      <div className="flex shrink-0 items-center gap-2">
-        <label className="flex items-center gap-1.5 text-[11px] text-stone-500">
-          From
-          <input
-            type="date"
-            className={dateInputClass}
-            value={dateFrom}
-            onChange={(e) => onDateChange({ from: e.target.value, to: dateTo })}
-          />
-        </label>
-        <label className="flex items-center gap-1.5 text-[11px] text-stone-500">
-          To
-          <input
-            type="date"
-            className={dateInputClass}
-            value={dateTo}
-            onChange={(e) => onDateChange({ from: dateFrom, to: e.target.value })}
-          />
-        </label>
+      <div className="flex flex-col gap-2">
+        <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
+          Date range
+        </span>
+        <div className="flex w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 py-1.5 pr-2 pl-3.5 transition focus-within:border-blue-600">
+          <Calendar className="h-4 w-4 shrink-0 text-stone-400" strokeWidth={1.75} />
+          <label className="flex items-center gap-1.5">
+            <span className="sr-only">From</span>
+            <input
+              type="date"
+              className={dateInputClass}
+              value={dateFrom}
+              onChange={(e) => onDateChange({ from: e.target.value, to: dateTo })}
+            />
+          </label>
+          <span className="text-stone-300">–</span>
+          <label className="flex items-center gap-1.5">
+            <span className="sr-only">To</span>
+            <input
+              type="date"
+              className={dateInputClass}
+              value={dateTo}
+              onChange={(e) => onDateChange({ from: dateFrom, to: e.target.value })}
+            />
+          </label>
+          {(dateFrom || dateTo) && (
+            <button
+              type="button"
+              onClick={() => onDateChange({ from: "", to: "" })}
+              aria-label="Clear date range"
+              className="ml-1 rounded-full p-1 text-stone-400 transition hover:bg-white hover:text-blue-600"
+            >
+              <X className="h-3.5 w-3.5" strokeWidth={2} />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

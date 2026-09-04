@@ -4,6 +4,7 @@ import { ARTICLE_CATEGORIES } from '@/types/article'
 
 type FilterBarProps = {
   authors: string[]
+  isLoadingAuthors: boolean
   selectedSources: string[]
   selectedCategories: string[]
   selectedAuthors: string[]
@@ -20,6 +21,7 @@ type FilterBarProps = {
 
 const FilterBar = ({
   authors,
+  isLoadingAuthors,
   selectedSources,
   selectedCategories,
   selectedAuthors,
@@ -38,6 +40,7 @@ const FilterBar = ({
       <FilterPills
         categories={ARTICLE_CATEGORIES}
         authors={authors}
+        isLoadingAuthors={isLoadingAuthors}
         selectedSources={selectedSources}
         selectedCategories={selectedCategories}
         selectedAuthors={selectedAuthors}

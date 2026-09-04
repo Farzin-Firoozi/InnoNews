@@ -1,9 +1,8 @@
 import { Link } from "react-router-dom";
 import type { Article } from "../../types/article";
-import { ImageOrPlaceholder } from "./ImageOrPlaceholder";
+import SmartImage from "@/components/SmartImage";
 import { articleHref, tagLabel } from "./format";
 import { readTime, timeAgo } from "@/utils/date";
-import Skeleton from "@/components/Skeleton";
 
 interface MetaProps {
   article: Article;
@@ -31,8 +30,8 @@ export function HeroSplitCard({ article }: { article: Article }) {
       to={articleHref(article)}
       className="group grid grid-cols-1 gap-5 md:grid-cols-2 md:items-center"
     >
-      <ImageOrPlaceholder
-        src={article.imageUrl}
+      <SmartImage
+        src={article.imageUrl ?? undefined}
         alt={article.title}
         className="aspect-[4/3] w-full rounded-2xl transition duration-500 group-hover:scale-[1.02]"
       />
@@ -65,8 +64,8 @@ export function VerticalCard({
       to={articleHref(article)}
       className={`group flex flex-col gap-3 ${className}`}
     >
-      <ImageOrPlaceholder
-        src={article.imageUrl}
+      <SmartImage
+        src={article.imageUrl ?? undefined}
         alt={article.title}
         className="aspect-[4/3] w-full rounded-xl transition duration-500 group-hover:scale-[1.02]"
       />
@@ -89,8 +88,8 @@ export function HorizontalCard({
 }) {
   return (
     <Link to={articleHref(article)} className={`group flex gap-3 ${className}`}>
-      <ImageOrPlaceholder
-        src={article.imageUrl}
+      <SmartImage
+        src={article.imageUrl ?? undefined}
         alt={article.title}
         className="h-20 w-24 shrink-0 rounded-lg"
       />
@@ -118,8 +117,8 @@ export function OverlayCard({
       to={articleHref(article)}
       className={`group relative block overflow-hidden rounded-2xl ${className}`}
     >
-      <ImageOrPlaceholder
-        src={article.imageUrl}
+      <SmartImage
+        src={article.imageUrl ?? undefined}
         alt={article.title}
         className="h-full w-full transition duration-700 group-hover:scale-105"
       />

@@ -5,6 +5,7 @@ import type {
   SelectedFilters,
 } from '../types/article'
 import { ARTICLE_SOURCES } from '../types/article'
+import * as bbc from './sources/bbc'
 import * as guardian from './sources/guardian'
 import * as newsapi from './sources/newsapi'
 import * as nytimes from './sources/nytimes'
@@ -18,6 +19,7 @@ export const SOURCE_ADAPTERS: Record<ArticleSource, SourceAdapter> = {
   newsapi,
   guardian,
   nytimes,
+  bbc,
 }
 
 function isKnownSource(value: string): value is ArticleSource {

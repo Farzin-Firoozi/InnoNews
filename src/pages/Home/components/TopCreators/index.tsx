@@ -28,7 +28,9 @@ const TopCreators = ({ articles }: TopCreatorsProps) => {
             <span className="text-sm font-medium text-stone-900">
               {article.author}
             </span>
-            <span className="text-xs text-blue-600">{sourceLabel(article)}</span>
+            <span className="text-xs text-blue-600">
+              {sourceLabel(article)}
+            </span>
           </Link>
         ))}
       </div>

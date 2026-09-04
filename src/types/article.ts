@@ -1,4 +1,4 @@
-export type ArticleSource = 'newsapi' | 'guardian' | 'nytimes'
+export type ArticleSource = 'newsapi' | 'guardian' | 'nytimes' | 'bbc'
 
 export type ArticleDetailParams = {
   source?: string
@@ -52,12 +52,14 @@ export const ARTICLE_SOURCES: ArticleSource[] = [
   'newsapi',
   'guardian',
   'nytimes',
+  'bbc',
 ]
 
 export const SOURCE_LABELS: Record<ArticleSource, string> = {
   newsapi: 'NewsAPI',
   guardian: 'The Guardian',
   nytimes: 'New York Times',
+  bbc: 'BBC News',
 }
 
 export const ARTICLE_CATEGORIES = [
