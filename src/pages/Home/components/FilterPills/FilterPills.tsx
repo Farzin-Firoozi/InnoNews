@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 
 import Chip from '@/components/Chip'
+import DateField from '@/components/DateField'
 
 import type { ArticleSource } from '@/types/article'
 import { ARTICLE_SOURCES, SOURCE_LABELS } from '@/types/article'
@@ -53,9 +54,6 @@ type FilterPillsProps = HomeFilters & {
   categories: readonly string[]
 }
 
-const dateInputClass =
-  'min-w-0 bg-transparent text-sm text-stone-700 outline-none [color-scheme:light] placeholder:text-stone-400'
-
 const FilterPills = ({
   categories,
   authors,
@@ -96,32 +94,30 @@ const FilterPills = ({
   }))
 
   const dateRange = (
-    <div className="flex flex-col gap-2 md:order-1 md:shrink-0">
-      <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
+    <div className="flex w-full flex-col gap-2 md:order-1 md:shrink-0">
+      <span className="text-xs font-medium tracking-widest text-stone-500 uppercase">
         Date range
       </span>
-      <div className="focus-within:border-brand flex h-9 w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 pr-2 pl-3.5 transition">
-        <label className="flex items-center gap-1.5">
-          <span className="text-xs text-stone-500">From</span>
-          <input
-            type="date"
-            className={dateInputClass}
+      <div className="focus-within:border-brand flex h-9 w-full shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 pr-2 pl-3.5 transition">
+        <span className="flex w-full items-center gap-1.5">
+          <span className="translate-y-px text-xs text-stone-500">From</span>
+          <DateField
             value={dateFrom}
-            onChange={(e) => onDateChange({ from: e.target.value, to: dateTo })}
+            onChange={(value) => onDateChange({ from: value, to: dateTo })}
+            placeholder="Any date"
+            aria-label="From date"
           />
-        </label>
+        </span>
         <span className="text-stone-300">–</span>
-        <label className="flex items-center gap-1.5">
-          <span className="text-xs text-stone-500">To</span>
-          <input
-            type="date"
-            className={dateInputClass}
+        <span className="flex w-full items-center gap-1.5">
+          <span className="translate-y-px text-xs text-stone-500">To</span>
+          <DateField
             value={dateTo}
-            onChange={(e) =>
-              onDateChange({ from: dateFrom, to: e.target.value })
-            }
+            onChange={(value) => onDateChange({ from: dateFrom, to: value })}
+            placeholder="Any date"
+            aria-label="To date"
           />
-        </label>
+        </span>
         {(dateFrom || dateTo) && (
           <button
             type="button"
@@ -138,7 +134,7 @@ const FilterPills = ({
 
   return (
     <div className="flex flex-col gap-5 md:flex-row md:flex-wrap md:items-end md:justify-between md:gap-x-8 md:gap-y-6">
-      <div className="flex flex-col items-center justify-between gap-5 md:order-2 md:w-full md:shrink-0 md:flex-row">
+      <div className="flex flex-col gap-5 md:order-2 md:w-full md:shrink-0 md:flex-row md:items-center md:justify-between">
         <ChipRow
           label="Source"
           options={sourceOptions}
@@ -147,7 +143,7 @@ const FilterPills = ({
           onClear={onClearSources}
         />
 
-        {dateRange}
+        <div className="w-full md:w-auto">{dateRange}</div>
       </div>
       <div className="md:order-3 md:basis-full">
         <ChipRow

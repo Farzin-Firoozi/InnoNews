@@ -31,6 +31,19 @@ export const timeAgo = (iso: string): string => {
   })
 }
 
+/** Formats a `yyyy-mm-dd` date-input value as "Jan 5, 2024", independent of
+ * the browser's own (inconsistent) rendering of `<input type="date">`. */
+export const formatShortDate = (value: string): string => {
+  if (!value) return ''
+  const date = new Date(`${value}T00:00:00`)
+  if (Number.isNaN(date.getTime())) return ''
+  return date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+}
+
 /** Rough reading time estimate derived from the real article text. */
 export const readTime = (article: Article): number => {
   const text = [article.content, article.description, article.title]
