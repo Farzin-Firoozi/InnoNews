@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
 
 import { Search, X } from 'lucide-react'
 import { parseAsString, useQueryState } from 'nuqs'
@@ -46,9 +45,7 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-30 border-b border-stone-200 bg-white/90 backdrop-blur">
       <div className="container flex items-center gap-4 py-4 sm:gap-6">
-        <Link to="/" className="shrink-0">
-          <BrandName />
-        </Link>
+        <BrandName />
 
         <form
           onSubmit={onSubmit}
@@ -71,7 +68,7 @@ const Header = () => {
               type="button"
               onClick={clear}
               aria-label="Clear search"
-              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-stone-700 transition hover:bg-white hover:text-brand"
+              className="hover:text-brand flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-stone-700 transition hover:bg-white"
             >
               <X className="h-4 w-4" strokeWidth={1.75} />
             </button>

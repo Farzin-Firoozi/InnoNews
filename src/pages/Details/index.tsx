@@ -1,4 +1,5 @@
-import { useParams } from 'react-router'
+import { ChevronRight } from 'lucide-react'
+import { Link, useParams } from 'react-router'
 
 import ArticleView from './components/ArticleView'
 import Alert from '@/components/Alert'
@@ -13,7 +14,34 @@ const ArticleDetailsPage = () => {
   const { error, isError, isPending, data: article } = useArticle(params)
 
   return (
-    <main className="container">
+    <main className="container flex flex-col gap-6">
+      <nav aria-label="Breadcrumb">
+        <ol className="flex items-center gap-1.5 text-sm text-stone-500">
+          <li>
+            <Link to="/" className="transition hover:text-brand">
+              Home
+            </Link>
+          </li>
+          {article?.category && (
+            <li className="flex items-center gap-1.5">
+              <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+              <Link
+                to={`/?categories=${encodeURIComponent(article.category)}`}
+                className="capitalize transition hover:text-brand"
+              >
+                {article.category}
+              </Link>
+            </li>
+          )}
+          <li className="flex min-w-0 items-center gap-1.5 text-stone-900">
+            <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">
+              {article?.title ?? 'Article'}
+            </span>
+          </li>
+        </ol>
+      </nav>
+
       {isError && (
         <Alert>
           {error instanceof Error ? error.message : 'Failed to load article.'}

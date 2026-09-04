@@ -5,10 +5,12 @@ import type { Article } from '@/types/article'
 
 import { articleKey } from '../../utils'
 import SectionHeader from '../SectionHeader'
+import CategoryNewsSkeleton from './CategoryNews.skeleton'
 
 type CategoryNewsProps = {
   business: Article[]
   sport: Article[]
+  isLoading?: boolean
 }
 
 const CategoryColumn = ({
@@ -36,7 +38,12 @@ const CategoryColumn = ({
   )
 }
 
-const CategoryNews = ({ business, sport }: CategoryNewsProps) => {
+const CategoryNews = ({
+  business,
+  sport,
+  isLoading = false,
+}: CategoryNewsProps) => {
+  if (isLoading) return <CategoryNewsSkeleton />
   if (business.length === 0 && sport.length === 0) return null
 
   return (

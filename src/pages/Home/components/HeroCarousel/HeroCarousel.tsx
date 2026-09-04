@@ -102,11 +102,11 @@ const HeroCarouselComponent = ({ articles }: HeroCarouselProps) => {
               <SmartImage
                 src={article.imageUrl ?? undefined}
                 alt={article.title}
-                className="aspect-[4/3] w-full rounded-2xl transition duration-500 hover:scale-[1.02]"
+                className="aspect-4/3 w-full rounded-2xl transition duration-500 hover:scale-[1.02]"
               />
               <div className="flex flex-col gap-3">
                 <p className="font-roboto text-xs text-stone-500">
-                  <span className="font-medium text-brand">
+                  <span className="text-brand font-medium">
                     {tagLabel(article)}
                   </span>
                   {' · '}
@@ -162,7 +162,7 @@ const HeroCarouselComponent = ({ articles }: HeroCarouselProps) => {
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={i === selectedIndex}
                 className={`h-2.5 rounded-full transition-all ${
-                  i === selectedIndex ? 'w-6 bg-brand' : 'w-2.5 bg-stone-50'
+                  i === selectedIndex ? 'bg-brand w-6' : 'w-2.5 bg-stone-50'
                 }`}
               />
             ))}

@@ -6,7 +6,7 @@ const HeroCarouselSkeletonComponent = () => {
   return (
     <div className="relative">
       <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 md:items-center">
-        <Skeleton className="aspect-[4/3] w-full rounded-2xl" />
+        <Skeleton className="aspect-4/3 w-full rounded-2xl" />
         <div className="flex flex-col gap-3">
           <Skeleton className="h-4 w-40 rounded-full" />
           <div className="flex flex-col gap-2">

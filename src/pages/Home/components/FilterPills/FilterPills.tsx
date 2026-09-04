@@ -5,29 +5,7 @@ import Chip from '@/components/Chip'
 import type { ArticleSource } from '@/types/article'
 import { ARTICLE_SOURCES, SOURCE_LABELS } from '@/types/article'
 
-/** Fixed widths so the skeleton occupies the same footprint an average
- * author-name chip would, avoiding layout shift once real data loads. */
-const AUTHOR_CHIP_SKELETON_WIDTHS = ['w-24', 'w-16', 'w-28', 'w-20', 'w-16']
-
-type ChipRowSkeletonProps = {
-  label: string
-}
-
-const ChipRowSkeleton = ({ label }: ChipRowSkeletonProps) => {
-  return (
-    <div className="flex flex-col gap-2">
-      <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
-        {label}
-      </span>
-      <div className="flex gap-2 overflow-hidden pb-1">
-        <Chip.Skeleton className="w-14" />
-        {AUTHOR_CHIP_SKELETON_WIDTHS.map((width, i) => (
-          <Chip.Skeleton key={i} className={width} />
-        ))}
-      </div>
-    </div>
-  )
-}
+import FilterPillsSkeleton from './FilterPills.skeleton'
 
 type ChipRowProps = {
   label: string
@@ -112,10 +90,19 @@ const FilterPills = ({
     value: source,
     label: SOURCE_LABELS[source],
   }))
-  const categoryOptions = categories.map((category) => ({
-    value: category,
-    label: category,
-  }))
+  // A category can arrive selected (URL/localStorage/breadcrumb link) that
+  // isn't in the fixed pill list — e.g. a source's own category string that
+  // doesn't map onto ARTICLE_CATEGORIES. Surface it as a pill anyway, first
+  // in the row, so it's never silently un-selectable.
+  const extraCategories = selectedCategories.filter(
+    (category) => !categories.includes(category),
+  )
+  const categoryOptions = [...extraCategories, ...categories].map(
+    (category) => ({
+      value: category,
+      label: category,
+    }),
+  )
   const authorOptions = authors.map((author) => ({
     value: author,
     label: author,
@@ -138,7 +125,7 @@ const FilterPills = ({
         onClear={onClearCategories}
       />
       {isLoadingAuthors ? (
-        <ChipRowSkeleton label="Author" />
+        <FilterPillsSkeleton label="Author" />
       ) : (
         (authorOptions.length > 0 || selectedAuthors.length > 0) && (
           <ChipRow

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { Article } from '@/types/article'
+import type { HomeFeedProps } from '@/types/home'
 
 import { pickTopCreators, splitFeed } from '../../utils'
 import CategoryNews from '../CategoryNews'
@@ -10,14 +10,13 @@ import HotNews from '../HotNews'
 import LatestNews from '../LatestNews'
 import TopCreators from '../TopCreators'
 
-type HomeFeedProps = {
-  carousel: Article[]
-  feed: Article[]
-  business: Article[]
-  sport: Article[]
-}
-
-const HomeFeed = ({ carousel, feed, business, sport }: HomeFeedProps) => {
+const HomeFeed = ({
+  carousel,
+  feed,
+  business,
+  sport,
+  isLoadingCategories = false,
+}: HomeFeedProps) => {
   const { latest, editorsPick, marquee } = splitFeed(feed)
   const topCreators = useMemo(() => pickTopCreators(feed), [feed])
 
@@ -33,7 +32,11 @@ const HomeFeed = ({ carousel, feed, business, sport }: HomeFeedProps) => {
 
       <LatestNews articles={latest} />
       <EditorsPick articles={editorsPick} />
-      <CategoryNews business={business} sport={sport} />
+      <CategoryNews
+        business={business}
+        sport={sport}
+        isLoading={isLoadingCategories}
+      />
       <TopCreators articles={topCreators} />
     </>
   )
