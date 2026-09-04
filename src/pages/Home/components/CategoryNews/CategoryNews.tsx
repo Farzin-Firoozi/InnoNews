@@ -36,7 +36,7 @@ const CategoryNews = ({ sections, isLoading = false }: CategoryNewsProps) => {
   return (
     <section className="grid grid-cols-1 gap-10 lg:grid-cols-2">
       {sections.map((section) => (
-        <CategoryColumn key={section.key} {...section} />
+        <CategoryColumn key={section.key} title={section.title} articles={section.articles} />
       ))}
     </section>
   )
