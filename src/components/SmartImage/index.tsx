@@ -37,11 +37,11 @@ const SmartImage = ({
 
   return (
     <div
-      className={cn('bg-stone-50 flex items-center justify-center', className)}
+      className={cn('flex items-center justify-center bg-gray-100', className)}
       role="img"
       aria-label={alt}
     >
-      <Newspaper className="text-stone-500 h-6 w-6" strokeWidth={1.5} />
+      <Newspaper className="h-6 w-6 text-gray-500" strokeWidth={1.5} />
     </div>
   )
 }

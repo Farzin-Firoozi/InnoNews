@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
+import { useAtom } from 'jotai'
 import { parseAsArrayOf, parseAsString, useQueryStates } from 'nuqs'
 
 import FilterBar from './components/FilterBar'
@@ -14,6 +15,7 @@ import type { SelectedFilters } from '@/types/article'
 import { useArticles } from '@/hooks/useArticles'
 import { useHomeNews } from '@/hooks/useHomeNews'
 import { useSearchResults } from '@/hooks/useSearchResults'
+import { preferencesAtom } from '@/state/preferences'
 
 const AUTHOR_OPTIONS_LIMIT = 12
 
@@ -36,6 +38,33 @@ const HomePage = () => {
     authors,
   } = filterParams
 
+  const [preferences, setPreferences] = useAtom(preferencesAtom)
+
+  // One-time hydration: if the URL arrived with no picks at all (a fresh
+  // visit, not a shared link), restore the last saved preferences. Only
+  // ever runs once, so it never fights a link's own params or later edits.
+  const hydratedRef = useRef(false)
+  useEffect(() => {
+    if (hydratedRef.current) return
+    hydratedRef.current = true
+
+    const urlHasPicks =
+      sources.length > 0 || categories.length > 0 || authors.length > 0
+    const prefsHavePicks =
+      preferences.sources.length > 0 ||
+      preferences.categories.length > 0 ||
+      preferences.authors.length > 0
+
+    if (!urlHasPicks && prefsHavePicks) {
+      setFilterParams({
+        sources: preferences.sources,
+        categories: preferences.categories,
+        authors: preferences.authors,
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const activeFilters: SelectedFilters = useMemo(
     () => ({
       query: query.trim() || undefined,
@@ -54,15 +83,14 @@ const HomePage = () => {
     sources.length > 0 ||
     authors.length > 0
 
-  // A source-only selection (no query/date/category/author) keeps the
-  // familiar homepage layout — carousel, curated sections — instead of
-  // dropping to the flat search-results grid.
-  const isSourcesOnly =
-    sources.length > 0 &&
+  // Picking only sources and/or categories (no query/date/author) keeps
+  // the familiar homepage layout — carousel, curated sections — instead
+  // of dropping to the flat search-results grid.
+  const isCuratedOnly =
+    (sources.length > 0 || categories.length > 0) &&
     !activeFilters.query &&
     !activeFilters.from &&
     !activeFilters.to &&
-    categories.length === 0 &&
     authors.length === 0
 
   const homepage = useHomeNews()
@@ -81,7 +109,7 @@ const HomePage = () => {
   const business = (businessQuery.data ?? []).slice(0, 2)
   const sport = (sportQuery.data ?? []).slice(0, 2)
 
-  const sourcesOnlyView = useMemo(() => {
+  const curatedView = useMemo(() => {
     const articles = filtered.data ?? []
     const byCategory = (needle: string) =>
       articles
@@ -115,12 +143,34 @@ const HomePage = () => {
   const toggle = (list: string[], value: string) =>
     list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
 
-  const onToggleSource = (value: string) =>
-    setFilterParams({ sources: toggle(sources, value) })
-  const onToggleCategory = (value: string) =>
-    setFilterParams({ categories: toggle(categories, value) })
-  const onToggleAuthor = (value: string) =>
-    setFilterParams({ authors: toggle(authors, value) })
+  const onToggleSource = (value: string) => {
+    const next = toggle(sources, value)
+    setFilterParams({ sources: next })
+    setPreferences((prev) => ({ ...prev, sources: next }))
+  }
+  const onToggleCategory = (value: string) => {
+    const next = toggle(categories, value)
+    setFilterParams({ categories: next })
+    setPreferences((prev) => ({ ...prev, categories: next }))
+  }
+  const onToggleAuthor = (value: string) => {
+    const next = toggle(authors, value)
+    setFilterParams({ authors: next })
+    setPreferences((prev) => ({ ...prev, authors: next }))
+  }
+
+  const onClearSources = () => {
+    setFilterParams({ sources: [] })
+    setPreferences((prev) => ({ ...prev, sources: [] }))
+  }
+  const onClearCategories = () => {
+    setFilterParams({ categories: [] })
+    setPreferences((prev) => ({ ...prev, categories: [] }))
+  }
+  const onClearAuthors = () => {
+    setFilterParams({ authors: [] })
+    setPreferences((prev) => ({ ...prev, authors: [] }))
+  }
 
   return (
     <main className="container flex flex-col gap-10">
@@ -133,9 +183,9 @@ const HomePage = () => {
         onToggleSource={onToggleSource}
         onToggleCategory={onToggleCategory}
         onToggleAuthor={onToggleAuthor}
-        onClearSources={() => setFilterParams({ sources: [] })}
-        onClearCategories={() => setFilterParams({ categories: [] })}
-        onClearAuthors={() => setFilterParams({ authors: [] })}
+        onClearSources={onClearSources}
+        onClearCategories={onClearCategories}
+        onClearAuthors={onClearAuthors}
         dateFrom={dateFrom}
         dateTo={dateTo}
         onDateChange={({ from, to }) => {
@@ -143,7 +193,7 @@ const HomePage = () => {
         }}
       />
 
-      {isFiltering && !isSourcesOnly ? (
+      {isFiltering && !isCuratedOnly ? (
         <FilteredResults
           articles={filtered.data}
           isLoading={filtered.isPending}
@@ -154,7 +204,7 @@ const HomePage = () => {
               : 'Failed to load articles.'
           }
         />
-      ) : isSourcesOnly ? (
+      ) : isCuratedOnly ? (
         filtered.isPending ? (
           <>
             <HotNews.Skeleton />
@@ -170,10 +220,10 @@ const HomePage = () => {
           </Alert>
         ) : (
           <HomeFeed
-            carousel={sourcesOnlyView.carousel}
-            feed={sourcesOnlyView.feed}
-            business={sourcesOnlyView.business}
-            sport={sourcesOnlyView.sport}
+            carousel={curatedView.carousel}
+            feed={curatedView.feed}
+            business={curatedView.business}
+            sport={curatedView.sport}
           />
         )
       ) : homepage.isPending ? (
