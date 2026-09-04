@@ -67,7 +67,14 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-30 border-b border-stone-200 bg-white/90 backdrop-blur">
       <div className="container flex items-center gap-4 py-4 sm:gap-6">
-        <Link to="/">
+        <Link
+          to="/"
+          onClick={(event) => {
+            // Already home: don't wipe the current filters by navigating to
+            // a bare "/" — just let the click do nothing.
+            if (pathname === '/') event.preventDefault()
+          }}
+        >
           <BrandName />
         </Link>
 
