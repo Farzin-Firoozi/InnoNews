@@ -17,7 +17,7 @@ const ArticleCardHorizontalSkeleton = ({
           <Skeleton className="h-3.5 w-full rounded-md" />
           <Skeleton className="h-3.5 w-2/3 rounded-md" />
         </div>
-        <Skeleton className="h-3 w-32 rounded-full" />
+        <Skeleton className="h-4 w-32 rounded-full" />
       </div>
     </div>
   )

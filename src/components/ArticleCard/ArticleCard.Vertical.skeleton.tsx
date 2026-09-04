@@ -12,10 +12,10 @@ const ArticleCardVerticalSkeleton = ({
   return (
     <div className={cn('flex flex-col gap-3', className)}>
       <Skeleton className="aspect-[4/3] w-full rounded-xl" />
-      <Skeleton className="h-3 w-40 rounded-full" />
-      <div className="flex flex-col gap-1.5">
-        <Skeleton className="h-4 w-full rounded-md" />
-        <Skeleton className="h-4 w-3/4 rounded-md" />
+      <Skeleton className="h-4 w-40 rounded-full" />
+      <div className="flex h-11 flex-col">
+        <Skeleton className="h-[1.375rem] w-full rounded-md" />
+        <Skeleton className="h-[1.375rem] w-3/4 rounded-md" />
       </div>
     </div>
   )

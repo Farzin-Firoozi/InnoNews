@@ -12,8 +12,8 @@ const TopCreatorsSkeleton = () => {
         {Array.from({ length: SKELETON_COUNT }, (_, i) => (
           <div key={i} className="flex flex-col items-center gap-2 text-center">
             <Skeleton className="h-14 w-14 rounded-full" />
-            <Skeleton className="h-4 w-20 rounded-md" />
-            <Skeleton className="h-3 w-16 rounded-md" />
+            <Skeleton className="h-5 w-20 rounded-md" />
+            <Skeleton className="h-4 w-16 rounded-md" />
           </div>
         ))}
       </div>

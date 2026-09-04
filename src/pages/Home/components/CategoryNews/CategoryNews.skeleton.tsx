@@ -1,13 +1,12 @@
 import ArticleCard from '@/components/ArticleCard'
-
-import SectionHeader from '../SectionHeader'
+import Skeleton from '@/components/Skeleton'
 
 const COLUMN_SKELETON_COUNT = 2
 
-const CategoryColumnSkeleton = ({ title }: { title: string }) => {
+const CategoryColumnSkeleton = () => {
   return (
     <div>
-      <SectionHeader title={title} />
+      <Skeleton className="mb-5 h-[37px] w-32 rounded" />
       <div className="grid grid-cols-2 gap-5">
         {Array.from({ length: COLUMN_SKELETON_COUNT }, (_, i) => (
           <ArticleCard.Vertical.Skeleton key={i} />
@@ -20,8 +19,8 @@ const CategoryColumnSkeleton = ({ title }: { title: string }) => {
 const CategoryNewsSkeleton = () => {
   return (
     <section className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-      <CategoryColumnSkeleton title="Business" />
-      <CategoryColumnSkeleton title="Sport News" />
+      <CategoryColumnSkeleton />
+      <CategoryColumnSkeleton />
     </section>
   )
 }
