@@ -1,9 +1,9 @@
-import { OverlayCard, VerticalCard } from '@/components/site/ArticleCard'
-import { SectionHeader } from '@/components/site/SectionHeader'
+import ArticleCard from '@/components/ArticleCard'
 
 import type { Article } from '@/types/article'
 
 import { articleKey } from '../../utils'
+import SectionHeader from '../SectionHeader'
 
 type EditorsPickProps = {
   articles: Article[]
@@ -17,12 +17,15 @@ const EditorsPick = ({ articles }: EditorsPickProps) => {
       <SectionHeader title="Editor's Pick" />
       <div className="flex flex-col gap-5">
         {articles[0] && (
-          <OverlayCard article={articles[0]} className="h-72 sm:h-96" />
+          <ArticleCard.Overlay article={articles[0]} className="h-72 sm:h-96" />
         )}
         {articles.length > 1 && (
           <div className="grid grid-cols-2 gap-x-5 gap-y-8 lg:grid-cols-4">
             {articles.slice(1).map((article) => (
-              <VerticalCard key={articleKey(article)} article={article} />
+              <ArticleCard.Vertical
+                key={articleKey(article)}
+                article={article}
+              />
             ))}
           </div>
         )}

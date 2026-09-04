@@ -1,9 +1,9 @@
-import { VerticalCard } from '@/components/site/ArticleCard'
-import { SectionHeader } from '@/components/site/SectionHeader'
+import ArticleCard from '@/components/ArticleCard'
 
 import type { Article } from '@/types/article'
 
 import { articleKey } from '../../utils'
+import SectionHeader from '../SectionHeader'
 
 type LatestNewsProps = {
   articles: Article[]
@@ -17,7 +17,7 @@ const LatestNews = ({ articles }: LatestNewsProps) => {
       <SectionHeader title="Latest News" />
       <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
         {articles.map((article) => (
-          <VerticalCard key={articleKey(article)} article={article} />
+          <ArticleCard.Vertical key={articleKey(article)} article={article} />
         ))}
       </div>
     </section>

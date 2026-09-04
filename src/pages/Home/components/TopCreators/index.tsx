@@ -1,7 +1,8 @@
 import { Link } from 'react-router'
 
-import { SectionHeader } from '@/components/site/SectionHeader'
-import { articleHref, initials, sourceLabel } from '@/components/site/format'
+import SectionHeader from '../SectionHeader'
+import { initials, sourceLabel } from '@/utils/format'
+import { articleHref } from '@/utils/links'
 
 import type { Article } from '@/types/article'
 
@@ -28,7 +29,7 @@ const TopCreators = ({ articles }: TopCreatorsProps) => {
             <span className="text-sm font-medium text-stone-900">
               {article.author}
             </span>
-            <span className="text-xs text-blue-600">
+            <span className="text-xs text-brand">
               {sourceLabel(article)}
             </span>
           </Link>

@@ -1,10 +1,10 @@
 import Alert from '@/components/Alert'
-import { VerticalCard } from '@/components/site/ArticleCard'
-import { SectionHeader } from '@/components/site/SectionHeader'
+import ArticleCard from '@/components/ArticleCard'
 
 import type { Article } from '@/types/article'
 
 import { articleKey } from '../../utils'
+import SectionHeader from '../SectionHeader'
 
 type CategoryNewsProps = {
   business: Article[]
@@ -26,7 +26,7 @@ const CategoryColumn = ({
       {articles.length > 0 ? (
         <div className="grid grid-cols-2 gap-5">
           {articles.map((article) => (
-            <VerticalCard key={articleKey(article)} article={article} />
+            <ArticleCard.Vertical key={articleKey(article)} article={article} />
           ))}
         </div>
       ) : (

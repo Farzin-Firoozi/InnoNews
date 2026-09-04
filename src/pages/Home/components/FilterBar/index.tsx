@@ -1,4 +1,4 @@
-import { FilterPills } from '@/components/site/FilterPills'
+import FilterPills from '../FilterPills'
 
 import { ARTICLE_CATEGORIES } from '@/types/article'
 

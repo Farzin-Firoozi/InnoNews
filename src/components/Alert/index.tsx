@@ -9,7 +9,13 @@ type AlertProps = {
 
 const Alert = ({ className, children }: AlertProps) => {
   return (
-    <p role="alert" className={cn('text-sm text-stone-500', className)}>
+    <p
+      role="alert"
+      className={cn(
+        'rounded-lg border-red-400 bg-red-50 p-4 text-sm text-red-700',
+        className,
+      )}
+    >
       {children}
     </p>
   )

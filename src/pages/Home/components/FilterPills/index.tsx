@@ -1,36 +1,35 @@
 import { X } from 'lucide-react'
 
-import Skeleton from '@/components/Skeleton'
+import Chip from '@/components/Chip'
 
-import { cn } from '@/utils/cn'
-
-import type { ArticleSource } from '../../types/article'
-import { ARTICLE_SOURCES, SOURCE_LABELS } from '../../types/article'
+import type { ArticleSource } from '@/types/article'
+import { ARTICLE_SOURCES, SOURCE_LABELS } from '@/types/article'
 
 /** Fixed widths so the skeleton occupies the same footprint an average
  * author-name chip would, avoiding layout shift once real data loads. */
 const AUTHOR_CHIP_SKELETON_WIDTHS = ['w-24', 'w-16', 'w-28', 'w-20', 'w-16']
 
-function ChipRowSkeleton({ label }: { label: string }) {
+type ChipRowSkeletonProps = {
+  label: string
+}
+
+const ChipRowSkeleton = ({ label }: ChipRowSkeletonProps) => {
   return (
     <div className="flex flex-col gap-2">
       <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
         {label}
       </span>
       <div className="flex gap-2 overflow-hidden pb-1">
-        <Skeleton className="h-[34px] w-14 shrink-0 rounded-full" />
+        <Chip.Skeleton className="w-14" />
         {AUTHOR_CHIP_SKELETON_WIDTHS.map((width, i) => (
-          <Skeleton
-            key={i}
-            className={`h-[34px] ${width} shrink-0 rounded-full`}
-          />
+          <Chip.Skeleton key={i} className={width} />
         ))}
       </div>
     </div>
   )
 }
 
-interface ChipRowProps {
+type ChipRowProps = {
   label: string
   options: { value: string; label: string }[]
   selected: string[]
@@ -38,48 +37,32 @@ interface ChipRowProps {
   onClear: () => void
 }
 
-function ChipRow({
+const ChipRow = ({
   label,
   options,
   selected,
   onToggle,
   onClear,
-}: ChipRowProps) {
+}: ChipRowProps) => {
   return (
     <div className="flex flex-col gap-2">
       <span className="text-xs font-medium tracking-widest text-stone-500 uppercase">
         {label}
       </span>
       <div className="-mx-4 flex scrollbar-none gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
-        <button
-          type="button"
-          onClick={onClear}
-          aria-pressed={selected.length === 0}
-          className={`shrink-0 rounded-full border px-3.5 py-1.5 text-sm capitalize transition ${
-            selected.length === 0
-              ? 'border-blue-600 bg-blue-600 text-white'
-              : 'border-stone-200 bg-stone-50 text-stone-700 hover:border-blue-600/50'
-          }`}
-        >
+        <Chip pressed={selected.length === 0} onClick={onClear}>
           All
-        </button>
+        </Chip>
         {options.map((option) => {
           const isActive = selected.includes(option.value)
           return (
-            <button
+            <Chip
               key={option.value}
-              type="button"
+              pressed={isActive}
               onClick={() => onToggle(option.value)}
-              aria-pressed={isActive}
-              className={cn(
-                'shrink-0 cursor-pointer rounded-full border px-3.5 py-1.5 text-sm capitalize transition',
-                isActive
-                  ? 'border-blue-600 bg-blue-600 text-white'
-                  : 'border-stone-200 bg-stone-50 text-stone-700 hover:border-blue-600/50',
-              )}
             >
               {option.label}
-            </button>
+            </Chip>
           )
         })}
       </div>
@@ -87,7 +70,7 @@ function ChipRow({
   )
 }
 
-interface FilterPillsProps {
+type FilterPillsProps = {
   categories: readonly string[]
   authors: string[]
   isLoadingAuthors: boolean
@@ -108,7 +91,7 @@ interface FilterPillsProps {
 const dateInputClass =
   'min-w-0 bg-transparent text-sm text-stone-700 outline-none [color-scheme:light] placeholder:text-stone-400'
 
-export function FilterPills({
+const FilterPills = ({
   categories,
   authors,
   isLoadingAuthors,
@@ -124,7 +107,7 @@ export function FilterPills({
   dateFrom,
   dateTo,
   onDateChange,
-}: FilterPillsProps) {
+}: FilterPillsProps) => {
   const sourceOptions = ARTICLE_SOURCES.map((source: ArticleSource) => ({
     value: source,
     label: SOURCE_LABELS[source],
@@ -172,7 +155,7 @@ export function FilterPills({
         <span className="text-xs font-medium tracking-[0.1em] text-stone-500 uppercase">
           Date range
         </span>
-        <div className="flex w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 py-1.5 pr-2 pl-3.5 transition focus-within:border-blue-600">
+        <div className="flex w-fit shrink-0 items-center gap-2 rounded-full border border-stone-200 bg-stone-50 py-1.5 pr-2 pl-3.5 transition focus-within:border-brand">
           <label className="flex items-center gap-1.5">
             <span className="text-xs text-stone-500">From</span>
             <input
@@ -201,7 +184,7 @@ export function FilterPills({
               type="button"
               onClick={() => onDateChange({ from: '', to: '' })}
               aria-label="Clear date range"
-              className="ml-1 rounded-full p-1 text-stone-400 transition hover:bg-white hover:text-blue-600"
+              className="ml-1 rounded-full p-1 text-stone-400 transition hover:bg-white hover:text-brand"
             >
               <X className="h-3.5 w-3.5" strokeWidth={2} />
             </button>
@@ -211,3 +194,5 @@ export function FilterPills({
     </div>
   )
 }
+
+export default FilterPills

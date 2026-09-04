@@ -1,11 +1,11 @@
-import { ChevronRight } from "lucide-react";
+import { ChevronRight } from 'lucide-react'
 
-interface SectionHeaderProps {
-  title: string;
-  onSeeAll?: () => void;
+type SectionHeaderProps = {
+  title: string
+  onSeeAll?: () => void
 }
 
-export function SectionHeader({ title, onSeeAll }: SectionHeaderProps) {
+const SectionHeader = ({ title, onSeeAll }: SectionHeaderProps) => {
   return (
     <div className="mb-5 flex items-end justify-between">
       <h2 className="font-oranienbaum text-2xl text-stone-900 sm:text-[28px]">
@@ -15,12 +15,14 @@ export function SectionHeader({ title, onSeeAll }: SectionHeaderProps) {
         <button
           type="button"
           onClick={onSeeAll}
-          className="flex items-center gap-1 text-sm font-medium text-blue-600 transition hover:gap-1.5"
+          className="flex items-center gap-1 text-sm font-medium text-brand transition hover:gap-1.5"
         >
           See all
           <ChevronRight className="h-4 w-4" strokeWidth={2.25} />
         </button>
       )}
     </div>
-  );
+  )
 }
+
+export default SectionHeader

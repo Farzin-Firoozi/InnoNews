@@ -1,10 +1,12 @@
 import Alert from '@/components/Alert'
-import { VerticalCard } from '@/components/site/ArticleCard'
-import { SectionHeader } from '@/components/site/SectionHeader'
+import ArticleCard from '@/components/ArticleCard'
 
 import type { Article } from '@/types/article'
 
 import { articleKey } from '../../utils'
+import SectionHeader from '../SectionHeader'
+
+const SKELETON_COUNT = 8
 
 type FilteredResultsProps = {
   articles: Article[] | undefined
@@ -23,21 +25,24 @@ const FilteredResults = ({
     <section>
       <SectionHeader title="Results" />
 
-      {isLoading && <Alert>Searching…</Alert>}
-
       {isError && <Alert>{errorMessage}</Alert>}
 
       {!isLoading && !isError && articles?.length === 0 && (
         <Alert>No articles matched these filters.</Alert>
       )}
 
-      {!isLoading && !isError && articles && articles.length > 0 && (
-        <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
-          {articles.map((article) => (
-            <VerticalCard key={articleKey(article)} article={article} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-2 gap-x-5 gap-y-8 sm:grid-cols-3 lg:grid-cols-4">
+        {isLoading
+          ? Array.from({ length: SKELETON_COUNT }, (_, i) => (
+              <ArticleCard.Vertical.Skeleton key={i} />
+            ))
+          : articles?.map((article) => (
+              <ArticleCard.Vertical
+                key={articleKey(article)}
+                article={article}
+              />
+            ))}
+      </div>
     </section>
   )
 }

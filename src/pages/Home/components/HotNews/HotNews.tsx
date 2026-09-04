@@ -19,7 +19,7 @@ const HotNewsComponent = ({ articles }: HotNewsProps) => {
         <Link
           to={articleHref(article)}
           key={`${article.source}:${article.id}`}
-          className="mx-4 inline-flex items-center gap-2 text-sm text-stone-700 transition hover:text-blue-600"
+          className="mx-4 inline-flex items-center gap-2 text-sm text-stone-700 transition hover:text-brand"
         >
           {article.title}
           <span className="text-stone-200" aria-hidden="true">
@@ -32,7 +32,7 @@ const HotNewsComponent = ({ articles }: HotNewsProps) => {
 
   return (
     <div className="group/marquee flex items-center gap-3 overflow-hidden rounded-full border border-stone-200 bg-stone-50 py-2 pr-2 pl-4">
-      <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium tracking-[0.15em] text-blue-600">
+      <span className="flex shrink-0 items-center gap-1.5 text-xs font-medium tracking-[0.15em] text-brand">
         <Flame className="h-4 w-4" strokeWidth={1.75} />
         HOT
       </span>

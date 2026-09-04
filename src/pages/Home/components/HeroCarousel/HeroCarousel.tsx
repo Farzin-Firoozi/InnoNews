@@ -1,75 +1,84 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import useEmblaCarousel from "embla-carousel-react";
-import type { Article } from "../../types/article";
-import SmartImage from "@/components/SmartImage";
-import { articleHref, tagLabel } from "./format";
-import { readTime, timeAgo } from "@/utils/date";
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 
-const AUTOPLAY_INTERVAL_MS = 5000;
-const MANUAL_PAUSE_MS = 5000;
+import useEmblaCarousel from 'embla-carousel-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 
-export function HeroCarousel({ articles }: { articles: Article[] }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
-  const manualUntilRef = useRef(0);
+import SmartImage from '@/components/SmartImage'
 
-  const count = articles.length;
+import { readTime, timeAgo } from '@/utils/date'
+import { tagLabel } from '@/utils/format'
+import { articleHref } from '@/utils/links'
+
+import type { Article } from '@/types/article'
+
+const AUTOPLAY_INTERVAL_MS = 5000
+const MANUAL_PAUSE_MS = 5000
+
+type HeroCarouselProps = {
+  articles: Article[]
+}
+
+const HeroCarouselComponent = ({ articles }: HeroCarouselProps) => {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true })
+  const [selectedIndex, setSelectedIndex] = useState(0)
+  const [isHovering, setIsHovering] = useState(false)
+  const manualUntilRef = useRef(0)
+
+  const count = articles.length
 
   const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelectedIndex(emblaApi.selectedScrollSnap());
-  }, [emblaApi]);
+    if (!emblaApi) return
+    setSelectedIndex(emblaApi.selectedScrollSnap())
+  }, [emblaApi])
 
   useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
+    if (!emblaApi) return
+    emblaApi.on('select', onSelect)
+    emblaApi.on('reInit', onSelect)
     return () => {
-      emblaApi.off("select", onSelect);
-      emblaApi.off("reInit", onSelect);
-    };
-  }, [emblaApi, onSelect]);
+      emblaApi.off('select', onSelect)
+      emblaApi.off('reInit', onSelect)
+    }
+  }, [emblaApi, onSelect])
 
   useEffect(() => {
-    if (!emblaApi || count <= 1) return;
+    if (!emblaApi || count <= 1) return
 
     const id = setInterval(() => {
-      if (isHovering) return;
-      if (Date.now() < manualUntilRef.current) return;
-      emblaApi.scrollNext();
-    }, AUTOPLAY_INTERVAL_MS);
+      if (isHovering) return
+      if (Date.now() < manualUntilRef.current) return
+      emblaApi.scrollNext()
+    }, AUTOPLAY_INTERVAL_MS)
 
-    return () => clearInterval(id);
-  }, [emblaApi, count, isHovering]);
+    return () => clearInterval(id)
+  }, [emblaApi, count, isHovering])
 
   const markManual = () => {
-    manualUntilRef.current = Date.now() + MANUAL_PAUSE_MS;
-  };
+    manualUntilRef.current = Date.now() + MANUAL_PAUSE_MS
+  }
 
   const goPrev = useCallback(() => {
-    markManual();
-    emblaApi?.scrollPrev();
-  }, [emblaApi]);
+    markManual()
+    emblaApi?.scrollPrev()
+  }, [emblaApi])
 
   const goNext = useCallback(() => {
-    markManual();
-    emblaApi?.scrollNext();
-  }, [emblaApi]);
+    markManual()
+    emblaApi?.scrollNext()
+  }, [emblaApi])
 
   const goTo = (i: number) => {
-    markManual();
-    emblaApi?.scrollTo(i);
-  };
+    markManual()
+    emblaApi?.scrollTo(i)
+  }
 
   const onKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "ArrowLeft") goPrev();
-    if (event.key === "ArrowRight") goNext();
-  };
+    if (event.key === 'ArrowLeft') goPrev()
+    if (event.key === 'ArrowRight') goNext()
+  }
 
-  if (count === 0) return null;
+  if (count === 0) return null
 
   return (
     <div
@@ -97,12 +106,12 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
               />
               <div className="flex flex-col gap-3">
                 <p className="font-roboto text-xs text-stone-500">
-                  <span className="font-medium text-blue-600">
+                  <span className="font-medium text-brand">
                     {tagLabel(article)}
                   </span>
-                  {" · "}
+                  {' · '}
                   {timeAgo(article.publishedAt)}
-                  {" · "}
+                  {' · '}
                   {readTime(article)} min read
                 </p>
                 <h2 className="font-oranienbaum text-2xl leading-snug text-stone-900 sm:text-3xl md:text-4xl">
@@ -124,22 +133,22 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
           <button
             type="button"
             onClick={(e) => {
-              e.preventDefault();
-              goPrev();
+              e.preventDefault()
+              goPrev()
             }}
             aria-label="Previous story"
-            className="absolute left-1 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 text-stone-900 shadow-md transition hover:bg-white group-hover/carousel:flex md:flex"
+            className="absolute top-1/2 left-1 hidden -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 text-stone-900 shadow-md transition group-hover/carousel:flex hover:bg-white md:flex"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
           <button
             type="button"
             onClick={(e) => {
-              e.preventDefault();
-              goNext();
+              e.preventDefault()
+              goNext()
             }}
             aria-label="Next story"
-            className="absolute right-1 top-1/2 hidden -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 text-stone-900 shadow-md transition hover:bg-white group-hover/carousel:flex md:flex"
+            className="absolute top-1/2 right-1 hidden -translate-y-1/2 items-center justify-center rounded-full bg-white/90 p-2 text-stone-900 shadow-md transition group-hover/carousel:flex hover:bg-white md:flex"
           >
             <ChevronRight className="h-5 w-5" />
           </button>
@@ -153,7 +162,7 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
                 aria-label={`Go to slide ${i + 1}`}
                 aria-current={i === selectedIndex}
                 className={`h-2.5 rounded-full transition-all ${
-                  i === selectedIndex ? "w-6 bg-blue-600" : "w-2.5 bg-stone-50"
+                  i === selectedIndex ? 'w-6 bg-brand' : 'w-2.5 bg-stone-50'
                 }`}
               />
             ))}
@@ -161,5 +170,7 @@ export function HeroCarousel({ articles }: { articles: Article[] }) {
         </>
       )}
     </div>
-  );
+  )
 }
+
+export default HeroCarouselComponent

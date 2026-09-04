@@ -60,7 +60,7 @@ const ArticleBody = ({ article }: ArticleBodyProps) => {
                 <a
                   key={item.id}
                   href={`#${item.id}`}
-                  className="text-sm text-stone-700 transition hover:text-blue-600"
+                  className="text-sm text-stone-700 transition hover:text-brand"
                 >
                   {item.label}
                 </a>

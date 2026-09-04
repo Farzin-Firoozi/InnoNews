@@ -17,7 +17,7 @@ const Footer = () => {
           <p>Copyright &copy; {new Date().getFullYear()} InnoNews.</p>
           <a
             href="#top"
-            className="border-stone-200 text-stone-700 hover:border-blue-600 hover:text-blue-600 rounded-full border px-3 py-1.5 transition"
+            className="border-stone-200 text-stone-700 hover:border-brand hover:text-brand rounded-full border px-3 py-1.5 transition"
           >
             Back to top ↑
           </a>

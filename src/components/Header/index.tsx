@@ -71,7 +71,7 @@ const Header = () => {
               type="button"
               onClick={clear}
               aria-label="Clear search"
-              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-stone-700 transition hover:bg-white hover:text-blue-600"
+              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-stone-700 transition hover:bg-white hover:text-brand"
             >
               <X className="h-4 w-4" strokeWidth={1.75} />
             </button>

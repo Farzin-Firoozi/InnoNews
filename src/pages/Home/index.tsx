@@ -5,10 +5,10 @@ import { parseAsArrayOf, parseAsString, useQueryStates } from 'nuqs'
 
 import FilterBar from './components/FilterBar'
 import FilteredResults from './components/FilteredResults'
+import HeroCarousel from './components/HeroCarousel'
 import HomeFeed from './components/HomeFeed'
 import HotNews from './components/HotNews'
 import Alert from '@/components/Alert'
-import { HeroCarouselSkeleton } from '@/components/site/HeroCarousel.skeleton'
 
 import type { SelectedFilters } from '@/types/article'
 
@@ -209,7 +209,7 @@ const HomePage = () => {
           <>
             <HotNews.Skeleton />
             <section>
-              <HeroCarouselSkeleton />
+              <HeroCarousel.Skeleton />
             </section>
           </>
         ) : filtered.isError ? (
@@ -230,7 +230,7 @@ const HomePage = () => {
         <>
           <HotNews.Skeleton />
           <section>
-            <HeroCarouselSkeleton />
+            <HeroCarousel.Skeleton />
           </section>
         </>
       ) : homepage.isError ? (

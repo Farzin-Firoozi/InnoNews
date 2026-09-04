@@ -1,8 +1,8 @@
-import Skeleton from "@/components/Skeleton";
+import Skeleton from '@/components/Skeleton'
 
 /** Mirrors HeroCarousel's slide + dots markup 1:1 (same grid, image aspect
  * ratio, text block, dot row) so swapping it in causes no layout shift. */
-export function HeroCarouselSkeleton() {
+const HeroCarouselSkeletonComponent = () => {
   return (
     <div className="relative">
       <div className="grid min-w-0 grid-cols-1 gap-5 md:grid-cols-2 md:items-center">
@@ -27,5 +27,7 @@ export function HeroCarouselSkeleton() {
         <Skeleton className="h-2.5 w-2.5 rounded-full" />
       </div>
     </div>
-  );
+  )
 }
+
+export default HeroCarouselSkeletonComponent
